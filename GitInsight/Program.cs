@@ -2,7 +2,7 @@
 
 using LibGit2Sharp;
 
-Repository repository = new("C:\\Users\\Willi\\Desktop\\BDSA\\assignment-05");
+Repository repository = new(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent + "\\GitTestRepo");
 var commitlog = repository.Commits;
 
 Console.WriteLine("-------COMMIT FREQUENCY-------");
