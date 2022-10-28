@@ -1,18 +1,18 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using GitInsight;
 using LibGit2Sharp;
 
-Repository repository = new(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent + "\\GitTestRepo");
-var commitlog = repository.Commits;
+string testPath = "./GitTestRepo";
+var gitCommitTracker = new GitCommitTracker(testPath);
 
 Console.WriteLine("-------COMMIT FREQUENCY-------");
-foreach (var group in commitlog
-             .GroupBy(commit => commit.Author.When.Date)
-             .OrderBy(commits => commits.Key.Date))
-{
-    Console.WriteLine(group.Count() + " " + group.Key.ToShortDateString());
-}
+gitCommitTracker.GetCommitFrequency().ToList().ForEach(Console.WriteLine);
 
+Console.WriteLine("-------AUTHOR COMMITS-------");
+gitCommitTracker.GetCommitAuthor().ToList().ForEach(Console.WriteLine);
+
+/*
 Console.WriteLine();
 Console.WriteLine("-------AUTHOR COMMITS-------");
 foreach (var authorcommits in commitlog
@@ -28,3 +28,4 @@ foreach (var authorcommits in commitlog
     }
     Console.WriteLine();
 }
+*/

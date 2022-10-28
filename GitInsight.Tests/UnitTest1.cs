@@ -14,7 +14,7 @@ public class UnitTest1
         var expectedOutput = File.OpenText("../../../ExpectedOutput.txt").ReadToEnd().TrimEnd();
 
         // Act
-        var program = Assembly.Load(nameof(GitInsight));
+        var program = Assembly.Load(nameof(GitCommitTracker));
         
         program.EntryPoint?.Invoke(null, new[] { Array.Empty<string>() });
 
