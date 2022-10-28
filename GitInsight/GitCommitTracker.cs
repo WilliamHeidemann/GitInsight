@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace GitInsight;
 public class GitCommitTracker 
 {
@@ -29,7 +31,7 @@ public class GitCommitTracker
              .GroupBy(commit => commit.Author.When.Date)
              .OrderBy(commits => commits.Key.Date))
         {
-            yield return commitsByDay.Count() + " " + commitsByDay.Key.ToShortDateString();
+            yield return commitsByDay.Count() + " " + commitsByDay.Key.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
         }
     }
 }
