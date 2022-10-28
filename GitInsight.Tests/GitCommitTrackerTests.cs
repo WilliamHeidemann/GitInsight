@@ -3,8 +3,44 @@ using LibGit2Sharp;
 
 namespace GitInsight.Tests;
 
-public class UnitTest1
+public class GitCommitTrackerTests
 {
+    public readonly string _testPath;
+
+    public GitCommitTrackerTests() 
+    {
+        _testPath = "../../../../GitTestRepo";
+    }
+
+    [Fact]
+    public void GetCommitFrequency_Returns_Correct_Output_for_Test_Repo() 
+    {
+        //Arrange
+        var gitCommitTracker = new GitCommitTracker(_testPath);
+        var expectedOutput = File.ReadAllLines("../../../ExpectedCommitFrequencyLog.txt");
+        
+        //Act
+        var actual = gitCommitTracker.GetCommitFrequency();
+        
+        // Assert
+        actual.Should().Equal(expectedOutput);
+    }
+
+    [Fact]
+    public void GetCommitAuthor_Returns_Correct_Output_for_Test_Repo() 
+    {
+        //Arrange
+        var gitCommitTracker = new GitCommitTracker(_testPath);
+        var expectedOutput = File.ReadAllLines("../../../ExpectedCommitAuthorLog.txt");
+        
+        //Act
+        var actual = gitCommitTracker.GetCommitAuthor();
+        
+        // Assert
+        actual.Should().Equal(expectedOutput);
+    }    
+
+    /*
     [Fact]
     public void Running_Program_Outputs_Expected_Log()
     {
@@ -23,7 +59,7 @@ public class UnitTest1
         output.Should().Be(expectedOutput);
     }
     
-    
+    */
     // [Fact]
     // public void Running_Program_With_Frequency_Flag_Outputs_Frequency_Log()
     // {
