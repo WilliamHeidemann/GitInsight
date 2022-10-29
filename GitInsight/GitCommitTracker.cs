@@ -31,7 +31,7 @@ public class GitCommitTracker
             }
             yield return "";
         }
-    }
+    } 
 
     public IEnumerable<string> GetCommitFrequency() {
          foreach (var commitsByDay in _repository.Commits
