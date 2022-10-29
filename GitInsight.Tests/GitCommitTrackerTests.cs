@@ -40,6 +40,14 @@ public class GitCommitTrackerTests
         actual.Should().Equal(expectedOutput);
     }    
 
+    [Fact]
+    public void Running_Program_With_Invalid_Repo_Should_Give_ArgumentException()
+    {
+        Action invalidRepo = () => new GitCommitTracker("invalid");
+
+        invalidRepo.Should().Throw<ArgumentException>().WithMessage("Repository was not found.");
+    }
+
     /*
     [Fact]
     public void Running_Program_Outputs_Expected_Log()
