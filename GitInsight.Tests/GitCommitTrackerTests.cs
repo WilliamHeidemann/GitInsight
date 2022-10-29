@@ -27,6 +27,20 @@ public class GitCommitTrackerTests
     }
 
     [Fact]
+    public void GetCommitFrequency_Should_Not_Be_Wrong_Output() 
+    {
+        //Arrange
+        var gitCommitTracker = new GitCommitTracker(_testPath);
+        var expectedOutput = File.ReadAllLines("../../../WrongOutput.txt");
+        
+        //Act
+        var actual = gitCommitTracker.GetCommitFrequency();
+        
+        // Assert
+        actual.Should().NotEqual(expectedOutput);
+    }
+
+    [Fact]
     public void GetCommitAuthor_Returns_Correct_Output_for_Test_Repo() 
     {
         //Arrange
@@ -39,6 +53,20 @@ public class GitCommitTrackerTests
         // Assert
         actual.Should().Equal(expectedOutput);
     }    
+
+    [Fact]
+    public void GetCommitAuthor_Should_Not_Be_Wrong_Output() 
+    {
+        //Arrange
+        var gitCommitTracker = new GitCommitTracker(_testPath);
+        var expectedOutput = File.ReadAllLines("../../../WrongOutput.txt");
+        
+        //Act
+        var actual = gitCommitTracker.GetCommitAuthor();
+        
+        // Assert
+        actual.Should().NotEqual(expectedOutput);
+    }  
 
     [Fact]
     public void Running_Program_With_Invalid_Repo_Should_Give_ArgumentException()
