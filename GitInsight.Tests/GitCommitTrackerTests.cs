@@ -13,11 +13,11 @@ public class GitCommitTrackerTests
     }
 
     [Fact]
-    public void GetCommitFrequency_Returns_Correct_Output_for_Test_Repo() 
+    public async Task GetCommitFrequency_Returns_Correct_Output_for_Test_Repo() 
     {
         //Arrange
         var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = File.ReadAllLines("../../../ExpectedCommitFrequencyLog.txt");
+        var expectedOutput = await File.ReadAllLinesAsync("../../../ExpectedCommitFrequencyLog.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitFrequency();
@@ -27,11 +27,11 @@ public class GitCommitTrackerTests
     }
 
     [Fact]
-    public void GetCommitFrequency_Should_Not_Be_Wrong_Output() 
+    public async Task GetCommitFrequency_Should_Not_Be_Wrong_Output() 
     {
         //Arrange
         var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = File.ReadAllLines("../../../WrongOutput.txt");
+        var expectedOutput = await File.ReadAllLinesAsync("../../../WrongOutput.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitFrequency();
@@ -41,11 +41,11 @@ public class GitCommitTrackerTests
     }
 
     [Fact]
-    public void GetCommitAuthor_Returns_Correct_Output_for_Test_Repo() 
+    public async Task GetCommitAuthor_Returns_Correct_Output_for_Test_Repo() 
     {
         //Arrange
         var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = File.ReadAllLines("../../../ExpectedCommitAuthorLog.txt");
+        var expectedOutput = await File.ReadAllLinesAsync("../../../ExpectedCommitAuthorLog.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitAuthor();
@@ -55,11 +55,11 @@ public class GitCommitTrackerTests
     }    
 
     [Fact]
-    public void GetCommitAuthor_Should_Not_Be_Wrong_Output() 
+    public async Task GetCommitAuthor_Should_Not_Be_Wrong_Output() 
     {
         //Arrange
         var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = File.ReadAllLines("../../../WrongOutput.txt");
+        var expectedOutput = await File.ReadAllLinesAsync("../../../WrongOutput.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitAuthor();
