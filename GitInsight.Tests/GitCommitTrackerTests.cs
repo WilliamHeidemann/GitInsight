@@ -25,7 +25,7 @@ public class GitCommitTrackerTests : IDisposable
     {
         //Arrange
         var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = await File.ReadAllLinesAsync("../../../ExpectedCommitFrequencyLog.txt");
+        var expectedOutput = await File.ReadAllLinesAsync("../../../files/ExpectedCommitFrequencyLog.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitFrequency();
@@ -39,7 +39,7 @@ public class GitCommitTrackerTests : IDisposable
     {
         //Arrange
         var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = await File.ReadAllLinesAsync("../../../WrongOutput.txt");
+        var expectedOutput = await File.ReadAllLinesAsync("../../../files/WrongOutput.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitFrequency();
@@ -53,7 +53,7 @@ public class GitCommitTrackerTests : IDisposable
     {
         //Arrange
         var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = await File.ReadAllLinesAsync("../../../ExpectedCommitAuthorLog.txt");
+        var expectedOutput = await File.ReadAllLinesAsync("../../../files/ExpectedCommitAuthorLog.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitAuthor();
@@ -67,7 +67,7 @@ public class GitCommitTrackerTests : IDisposable
     {
         //Arrange
         var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = await File.ReadAllLinesAsync("../../../WrongOutput.txt");
+        var expectedOutput = await File.ReadAllLinesAsync("../../../files/WrongOutput.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitAuthor();
