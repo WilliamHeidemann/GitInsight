@@ -1,6 +1,8 @@
 ﻿using LibGit2Sharp;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using GitInsight.Infrastructure;
+using GitInsight.Core;
 
 namespace GitInsight.Tests;
 
@@ -9,7 +11,8 @@ public class PersistentStorageTests : IDisposable
     private readonly SqliteConnection _connection;
     private readonly PersistentStorageContext _context; 
     private readonly PersistentStorage _persistentStorage;
-    private const string Filepath = "";
+    private const string ExistingFilepath = "/GitInsight/branch/master"; // Exists in database
+    private const string NonexistingFilepath = "/newPath"; // Does not exist in database
 
     public PersistentStorageTests()
     {
@@ -21,28 +24,85 @@ public class PersistentStorageTests : IDisposable
         _context.Database.EnsureCreated();
 
         _persistentStorage = new PersistentStorage(_context);
+
+        _persistentStorage.Create(new DbRepositoryCreateDTO(ExistingFilepath));
+        _context.SaveChanges();
     }
     
     [Fact]
-    public void Query_Existing_Repository_Returns_Repository()
+    public void Find_Existing_Repository_Without_Commit_Returns_Response_And_Null()
     {
         // Arrange
         
         // Act
-        var repository = _persistentStorage.GetRepository(Filepath);
-
+        var (response, commit) = _persistentStorage.Find(ExistingFilepath);
         // Assert
-        repository.Should().NotBeNull();
+        commit.Should().BeNull();
+        response.Should().Be(Response.Found);
     }
 
     [Fact]
-    public void Query_Newest_Commit_From_Repository_Returns_Commit()
+    public void Find_Existing_Repository_With_Commit_Returns_Response_And_Commit()
     {
         // Arrange
         
         // Act
+        var (response, commit) = _persistentStorage.Find(ExistingFilepath);
+        // Assert
+        commit.Should().BeNull();
+        response.Should().Be(Response.Found);
+    }
+
+    [Fact]
+    public void Update_Existing_Repository_Returns_Response_Updated()
+    {
+        // Arrange
+        var dbRepo = new DbRepositoryUpdateDTO(ExistingFilepath, "");
+        
+        // Act
+        var response = _persistentStorage.Update(dbRepo);
 
         // Assert
+        response.Should().Be(Response.Updated);
+    }
+
+    [Fact]
+    public void Update_Nonexisting_Repository_Returns_Response_Notfound()
+    {
+        // Arrange
+        var dbRepo = new DbRepositoryUpdateDTO(NonexistingFilepath, "");
+        
+        // Act
+        var response = _persistentStorage.Update(dbRepo);
+
+        // Assert
+        response.Should().Be(Response.NotFound);
+    }
+
+    [Fact]
+    public void Create_Existing_Repository_Returns_Response_Conflict()
+    {
+        // Arrange
+        var dbRepo = new DbRepositoryCreateDTO(ExistingFilepath);
+        
+        // Act
+        var response = _persistentStorage.Create(dbRepo);
+
+        // Assert
+        response.Should().Be(Response.Conflict);
+    }
+
+    [Fact]
+    public void Create_Nonexisting_Repository_Returns_Response_Created()
+    {
+        // Arrange
+        var dbRepo = new DbRepositoryCreateDTO(NonexistingFilepath);
+        
+        // Act
+        var response = _persistentStorage.Create(dbRepo);
+
+        // Assert
+        response.Should().Be(Response.Created);
     }
 
     public void Dispose()
