@@ -41,12 +41,24 @@ public class PersistentStorage : IPersistentStorage
                 return (Response.Found, new DbCommitDTO(commit!.SHA, commit.AuthorName, commit.Date, commit.ParentCommit?.SHA!));
             }
         }
-
-        throw new NotImplementedException();
     }
 
     public Response Update(DbRepositoryUpdateDTO dbRepositoryUpdate)
     {
-        throw new NotImplementedException();
+        var repo = _context.Repositories.Find(dbRepositoryUpdate.Filepath);
+
+        if (repo is null) return Response.NotFound;
+
+        var newCommit = new DbCommit();
+        newCommit.ParentCommit = repo.NewestCommit;
+        newCommit.SHA = dbRepositoryUpdate.NewestCommit;
+        newCommit.Date = DateTime.Now;
+        newCommit.AuthorName =  "John Doe"; // What to add here?
+
+        repo.NewestCommit = newCommit;
+
+        _context.SaveChanges();
+
+        return Response.Updated;
     }
 }
