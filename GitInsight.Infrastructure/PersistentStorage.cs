@@ -31,11 +31,14 @@ public class PersistentStorage : IPersistentStorage
         if (repo is null) {
             return (Response.NotFound, null);
         } else {
-            var commit = _context.Commits.Find(repo.NewestCommit);
+            if (repo.NewestCommit is null) {
+                return (Response.Found, null);
+            }
+            var commit = _context.Commits.Find(repo.NewestCommit.SHA); // We need to test if repo.NewestCommit is null
             if (commit is null) {
                 return (Response.Found, null);
             } else {
-                return (Response.Found, new DbCommitDTO(commit!.SHA, commit.AuthorName, commit.Date, commit.ParentCommit.SHA));
+                return (Response.Found, new DbCommitDTO(commit!.SHA, commit.AuthorName, commit.Date, commit.ParentCommit?.SHA!));
             }
         }
 

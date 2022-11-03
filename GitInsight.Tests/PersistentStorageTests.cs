@@ -57,20 +57,23 @@ public class PersistentStorageTests : IDisposable
     public void Update_Existing_Repository_Returns_Response_Updated()
     {
         // Arrange
-        var dbRepo = new DbRepositoryUpdateDTO(ExistingFilepath, "");
+        var dbRepo = new DbRepositoryUpdateDTO(ExistingFilepath, "shavalue");
         
         // Act
         var response = _persistentStorage.Update(dbRepo);
 
         // Assert
         response.Should().Be(Response.Updated);
+        
+        var (res, commit) = _persistentStorage.Find(ExistingFilepath);
+        commit!.SHA.Should().Be("shavalue");
     }
 
     [Fact]
     public void Update_Nonexisting_Repository_Returns_Response_Notfound()
     {
         // Arrange
-        var dbRepo = new DbRepositoryUpdateDTO(NonexistingFilepath, "");
+        var dbRepo = new DbRepositoryUpdateDTO(NonexistingFilepath, "shavalue");
         
         // Act
         var response = _persistentStorage.Update(dbRepo);
