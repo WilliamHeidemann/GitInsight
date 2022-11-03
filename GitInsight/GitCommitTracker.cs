@@ -4,7 +4,6 @@ namespace GitInsight;
 public class GitCommitTracker 
 {
     private readonly Repository _repository;
-
     public GitCommitTracker(string path)
     {
         _repository = Repository.IsValid(path) ? new Repository(path) : throw new ArgumentException($"Repository was not found at {path}.");
