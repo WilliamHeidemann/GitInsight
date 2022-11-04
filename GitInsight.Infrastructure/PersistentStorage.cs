@@ -47,8 +47,9 @@ public class PersistentStorage : IPersistentStorage
             return Response.Conflict;
         }
 
-        var realNewestCommit = new Repository(dbRepositoryCreate.Filepath).Commits.FirstOrDefault();
         DbCommit? newestCommit;
+
+        var realNewestCommit = new Repository(dbRepositoryCreate.Filepath).Commits.FirstOrDefault();
         if(realNewestCommit is null) newestCommit = null;
         else newestCommit = CreateDbCommit(realNewestCommit);
 
