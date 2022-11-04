@@ -1,6 +1,7 @@
 # EntityRelation diagram for the database implementation
 
 ```mermaid
+%%{init: {'theme': 'dark' } }%%
 erDiagram
     REPOSITORY |o--o| COMMIT:  has
     COMMIT |o--o| COMMIT: has
