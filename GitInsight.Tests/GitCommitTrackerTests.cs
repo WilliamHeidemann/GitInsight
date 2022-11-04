@@ -12,20 +12,20 @@ public class GitCommitTrackerTests : IDisposable
     public GitCommitTrackerTests() 
     {
         _testPath = "../../../test-repo/unzipped/GitTestRepo";
-        string zipPath = @"../../../test-repo/GitTestRepo.zip";
-        _extractPath = @"../../../test-repo/unzipped/";
+        string zipPath = "../../../test-repo/GitTestRepo.zip";
+        _extractPath = "../../../test-repo/unzipped/";
 
         System.IO.Directory.CreateDirectory(_extractPath);
-
+        
         ZipFile.ExtractToDirectory(zipPath, _extractPath);
     }
 
     [Fact]
-    public async Task GetCommitFrequency_Returns_Correct_Output_for_Test_Repo() 
+    public void GetCommitFrequency_Returns_Correct_Output_for_Test_Repo() 
     {
         //Arrange
-        var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = await File.ReadAllLinesAsync("../../../files/ExpectedCommitFrequencyLog.txt");
+        using var gitCommitTracker = new GitCommitTracker(_testPath);
+        var expectedOutput = File.ReadAllLines("../../../files/ExpectedCommitFrequencyLog.txt");
         
         //Act
         var actual = gitCommitTracker.GetCommitFrequency();
@@ -33,12 +33,12 @@ public class GitCommitTrackerTests : IDisposable
         // Assert
         actual.Should().Equal(expectedOutput);
     }
-
+    
     [Fact]
     public async Task GetCommitFrequency_Should_Not_Be_Wrong_Output() 
     {
         //Arrange
-        var gitCommitTracker = new GitCommitTracker(_testPath);
+        using var gitCommitTracker = new GitCommitTracker(_testPath);
         var expectedOutput = await File.ReadAllLinesAsync("../../../files/WrongOutput.txt");
         
         //Act
@@ -52,7 +52,7 @@ public class GitCommitTrackerTests : IDisposable
     public async Task GetCommitAuthor_Returns_Correct_Output_for_Test_Repo() 
     {
         //Arrange
-        var gitCommitTracker = new GitCommitTracker(_testPath);
+        using var gitCommitTracker = new GitCommitTracker(_testPath);
         var expectedOutput = await File.ReadAllLinesAsync("../../../files/ExpectedCommitAuthorLog.txt");
         
         //Act
@@ -66,7 +66,7 @@ public class GitCommitTrackerTests : IDisposable
     public async Task GetCommitAuthor_Should_Not_Be_Wrong_Output() 
     {
         //Arrange
-        var gitCommitTracker = new GitCommitTracker(_testPath);
+        using var gitCommitTracker = new GitCommitTracker(_testPath);
         var expectedOutput = await File.ReadAllLinesAsync("../../../files/WrongOutput.txt");
         
         //Act

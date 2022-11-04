@@ -8,6 +8,7 @@ namespace GitInsight.Tests;
 
 public class PersistentStorageTests : IDisposable
 {
+    
     private readonly SqliteConnection _connection;
     private readonly PersistentStorageContext _context; 
     private readonly PersistentStorage _persistentStorage;
@@ -107,7 +108,7 @@ public class PersistentStorageTests : IDisposable
         // Assert
         response.Should().Be(Response.Created);
     }
-
+    
     public void Dispose()
     {
         _context.Dispose();
