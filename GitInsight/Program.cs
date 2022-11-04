@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using GitInsight;
+using System.IO.Compression;
 
 public class Program
 {
