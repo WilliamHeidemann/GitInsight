@@ -36,7 +36,7 @@ public class PersistentStorageTests : IDisposable
         // Arrange
         
         // Act
-        var (response, commit) = _persistentStorage.Find(ExistingFilepath);
+        var (response, commit) = _persistentStorage.FindNewestCommit(ExistingFilepath);
         // Assert
         commit.Should().BeNull();
         response.Should().Be(Response.Found);
@@ -48,7 +48,7 @@ public class PersistentStorageTests : IDisposable
         // Arrange
         
         // Act
-        var (response, commit) = _persistentStorage.Find(ExistingFilepath);
+        var (response, commit) = _persistentStorage.FindNewestCommit(ExistingFilepath);
         // Assert
         commit.Should().BeNull();
         response.Should().Be(Response.Found);
@@ -66,7 +66,7 @@ public class PersistentStorageTests : IDisposable
         // Assert
         response.Should().Be(Response.Updated);
         
-        var (res, commit) = _persistentStorage.Find(ExistingFilepath);
+        var (res, commit) = _persistentStorage.FindNewestCommit(ExistingFilepath);
         commit!.SHA.Should().Be("shavalue");
     }
 

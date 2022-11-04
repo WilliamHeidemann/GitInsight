@@ -13,5 +13,5 @@ public class DbCommit
     [Required]
     public DateTime Date {get; set;}
 
-    public DbCommit ParentCommit {get; set;}
+    public DbCommit? ParentCommit {get; set;}
 }
