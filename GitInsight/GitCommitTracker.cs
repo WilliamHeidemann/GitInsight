@@ -1,14 +1,19 @@
 using System.Globalization;
 
 namespace GitInsight;
-public class GitCommitTracker 
+public class GitCommitTracker : IDisposable
 {
     private readonly Repository _repository;
     public GitCommitTracker(string path)
     {
         _repository = Repository.IsValid(path) ? new Repository(path) : throw new ArgumentException($"Repository was not found at {path}.");
     }
-    
+
+    public void Dispose()
+    {
+        _repository.Dispose();
+    }
+
     public IEnumerable<string> GetCommitAuthor()
     {
         foreach (var authorcommits in _repository.Commits
