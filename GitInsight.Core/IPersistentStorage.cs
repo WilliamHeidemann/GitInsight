@@ -1,9 +1,7 @@
 namespace GitInsight.Core;
 
 public interface IPersistentStorage{
-    (Response, DbCommitDTO?) Find(string Filepath);
-
+    IEnumerable<DbCommitDTO> FindAllCommits(string FilePath);
     Response Create(DbRepositoryCreateDTO dbRepositoryCreate);
 
-    Response Update(DbRepositoryUpdateDTO dbRepositoryUpdate);
 }
