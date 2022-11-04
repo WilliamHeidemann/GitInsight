@@ -1,22 +1,25 @@
 ﻿// See https://aka.ms/new-console-template for more information
-
+using CommandLine;
 using GitInsight;
 using System.IO.Compression;
 
 public class Program
 {
+    class Options 
+    {
+        [Option('h',"repo-path", Required=true, HelpText = "Insert the path to the repository")]
+        public string RepoPath { get; set; } = null!;
+
+        [Option('a', "author-mode", HelpText = "Switch to author-mode.")]
+        public bool AuthorMode { get; set; }
+
+    }
     public static void Main(string[] args)
     {
-        GitCommitTracker gitCommitTracker;
-        if (args.Length == 0)
-        {
-            Console.WriteLine("You have to give me a path!");
-            System.Environment.Exit(0);
-        }
-
-        gitCommitTracker = new GitCommitTracker(args[0]);
-
-        if (args.Length > 1 && args[1] == "author")
+        var result = Parser.Default.ParseArguments<Options>(args);            
+        var gitCommitTracker = new GitCommitTracker(result.Value.RepoPath);
+        
+        if (result.Value.AuthorMode)
         {
             Console.WriteLine("-------AUTHOR COMMITS-------");
             gitCommitTracker.GetCommitAuthor().ToList().ForEach(Console.WriteLine);
