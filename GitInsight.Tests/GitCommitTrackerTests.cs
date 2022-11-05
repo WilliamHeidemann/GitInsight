@@ -1,91 +1,47 @@
+using System.Collections;
 using System.Reflection;
 using LibGit2Sharp;
 using System.IO.Compression;
+using GitInsight.Core;
+using Moq;
 
 namespace GitInsight.Tests;
 
-public class GitCommitTrackerTests : IDisposable
+public class GitCommitTrackerTests
 {
-    private readonly string _testPath;
-    private readonly string _extractPath;
-
-    public GitCommitTrackerTests() 
-    {
-        _testPath = "../../../test-repo/unzipped/GitTestRepo";
-        string zipPath = "../../../test-repo/GitTestRepo.zip";
-        _extractPath = "../../../test-repo/unzipped/";
-
-        System.IO.Directory.CreateDirectory(_extractPath);
-        
-        ZipFile.ExtractToDirectory(zipPath, _extractPath);
-    }
-
     [Fact]
-    public void GetCommitFrequency_Returns_Correct_Output_for_Test_Repo() 
+    public void Commit_Frequency_With_CommitDTO_Of_DateTimeNow_William_Returns_Correct_Output()
     {
         //Arrange
-        using var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = File.ReadAllLines("../../../files/ExpectedCommitFrequencyLog.txt");
-        
+        var commitTracker = new GitCommitTracker();
+        var commit1 = new DbCommitDTO("123", "William", DateTime.Now, "456");
+        var commit2 = new DbCommitDTO("321", "Rakul", DateTime.Now, "654");
+        var commit3 = new DbCommitDTO("132", "Andreas", DateTime.Now.AddDays(1), "645");
+        var commitsToAnalyze = new List<DbCommitDTO> { commit1, commit2, commit3 };
+
         //Act
-        var actual = gitCommitTracker.GetCommitFrequency();
-        
-        // Assert
-        actual.Should().Equal(expectedOutput);
+        var result = commitTracker.GetCommitFrequency(commitsToAnalyze);
+        var expectedOutput = File.ReadAllLines("../../../files/ShortFrequencyCommitLog.txt");
+
+        //Assert
+        result.Should().BeEquivalentTo(expectedOutput);
     }
     
     [Fact]
-    public async Task GetCommitFrequency_Should_Not_Be_Wrong_Output() 
+    public void Commit_Author_With_CommitDTO_Of_DateTimeNow_William_Returns_Correct_Output()
     {
         //Arrange
-        using var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = await File.ReadAllLinesAsync("../../../files/WrongOutput.txt");
-        
+        var commitTracker = new GitCommitTracker();
+        var commit1 = new DbCommitDTO("123", "William", DateTime.Now, "456");
+        var commit2 = new DbCommitDTO("321", "Rakul", DateTime.Now, "654");
+        var commit3 = new DbCommitDTO("132", "Andreas", DateTime.Now.AddDays(1), "645");
+        var commitsToAnalyze = new List<DbCommitDTO> { commit1, commit2, commit3 };
+
         //Act
-        var actual = gitCommitTracker.GetCommitFrequency();
+        var result = commitTracker.GetCommitAuthor(commitsToAnalyze);
+        var expectedOutput = File.ReadAllLines("../../../files/ShortAuthorCommitLog.txt");
         
-        // Assert
-        actual.Should().NotEqual(expectedOutput);
-    }
-
-    [Fact]
-    public async Task GetCommitAuthor_Returns_Correct_Output_for_Test_Repo() 
-    {
-        //Arrange
-        using var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = await File.ReadAllLinesAsync("../../../files/ExpectedCommitAuthorLog.txt");
-        
-        //Act
-        var actual = gitCommitTracker.GetCommitAuthor();
-        
-        // Assert
-        actual.Should().Equal(expectedOutput);
-    }    
-
-    [Fact]
-    public async Task GetCommitAuthor_Should_Not_Be_Wrong_Output() 
-    {
-        //Arrange
-        using var gitCommitTracker = new GitCommitTracker(_testPath);
-        var expectedOutput = await File.ReadAllLinesAsync("../../../files/WrongOutput.txt");
-        
-        //Act
-        var actual = gitCommitTracker.GetCommitAuthor();
-        
-        // Assert
-        actual.Should().NotEqual(expectedOutput);
-    }  
-
-    [Fact]
-    public void Running_Program_With_Invalid_Repo_Should_Give_ArgumentException()
-    {
-        Action invalidRepo = () => new GitCommitTracker("invalid");
-
-        invalidRepo.Should().Throw<ArgumentException>().WithMessage($"Repository was not found at invalid.");
-    }
-
-    public void Dispose()
-    {
-        System.IO.Directory.Delete(_extractPath, true);
+        //Assert
+        result.Should().BeEquivalentTo(expectedOutput);
     }
 }

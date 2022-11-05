@@ -61,4 +61,9 @@ public class PersistentStorage : IPersistentStorage
 
         return Response.Updated;
     }
+
+    public IEnumerable<DbCommitDTO> FindAllCommits(string filepath)
+    {
+        throw new NotImplementedException();
+    }
 }

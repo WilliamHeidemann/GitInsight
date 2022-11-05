@@ -1,42 +1,31 @@
 using System.Globalization;
+using GitInsight.Core;
 
 namespace GitInsight;
-public class GitCommitTracker : IDisposable
+public class GitCommitTracker
 {
-    private readonly Repository _repository;
-    public GitCommitTracker(string path)
+    public IEnumerable<string> GetCommitFrequency(IEnumerable<DbCommitDTO> commitsToAnalyze)
     {
-        _repository = Repository.IsValid(path) ? new Repository(path) : throw new ArgumentException($"Repository was not found at {path}.");
+        return from commit in commitsToAnalyze
+                .GroupBy(commit => commit.Date.Day)
+            let padding = commit.Count() > 9 ? "    " : "     "
+            let amount = commit.Count()
+            let date = commit.First().Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)
+            select $"{padding}{amount} {date}";
     }
 
-    public void Dispose()
+    public IEnumerable<string> GetCommitAuthor(IEnumerable<DbCommitDTO> commitsToAnalyze)
     {
-        _repository.Dispose();
-    }
-
-    public IEnumerable<string> GetCommitAuthor()
-    {
-        foreach (var authorcommits in _repository.Commits
-                     .GroupBy(commit => commit.Committer.Name)
+        foreach (var authorcommits in commitsToAnalyze
+                     .GroupBy(commit => commit.AuthorName)
                      .Distinct())
         {
-            yield return authorcommits.First().Committer.Name;
+            yield return authorcommits.First().AuthorName;
             foreach (var commitInfo in GetCommitFrequency(authorcommits))
             {
                 yield return commitInfo;
             }
             yield return string.Empty;
         }
-    }
-
-    public IEnumerable<string> GetCommitFrequency() => GetCommitFrequency(_repository.Commits);
-    
-    private IEnumerable<string> GetCommitFrequency(IEnumerable<Commit> commitLog)
-    {
-        return from commit in commitLog
-            .GroupBy(commit => commit.Committer.When.Date)
-            .OrderBy(commits => commits.Key.Date)
-            let space = commit.Count() > 9 ? "    " : "     " 
-            select $"{space}{commit.Count()} {commit.Key.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}";
     }
 }
