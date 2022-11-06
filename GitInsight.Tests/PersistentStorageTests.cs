@@ -45,7 +45,7 @@ public class PersistentStorageTests : IDisposable
 
         _context.SaveChanges();
     }
-    /*
+    
     [Fact]
     public void Find_Existing_Repository_Without_Commit_Returns_Response_And_Null()
     {
