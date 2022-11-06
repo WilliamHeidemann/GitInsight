@@ -4,4 +4,6 @@ namespace GitInsight.Core;
 
 public record DbCommitDTO(string AuthorName, DateTime Date);
 
+public record DbCommitUpdateDTO(string SHA, string AuthorName, DateTime Date);
+
 public record DbCommitCreateDTO(string SHA, [MaxLength(50)]string AuthorName, DateTime Date);
