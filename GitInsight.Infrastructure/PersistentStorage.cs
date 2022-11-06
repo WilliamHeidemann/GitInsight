@@ -8,8 +8,10 @@ public class PersistentStorage : IPersistentStorage
         _context = context;
     }
 
+    // TODO 
     public IEnumerable<DbCommitDTO> FindAllCommits(string filePath)
     {
+        if(!Repository.IsValid(filePath)) throw new RepositoryNotFoundException("The Repository does not exist!");
         var (response, newestCommit) = FindNewestCommit(filePath);
         if (response == Response.NotFound)
         {
@@ -32,7 +34,7 @@ public class PersistentStorage : IPersistentStorage
         DbCommit? nextCommit = newestCommit.ParentCommit;
         while (newestCommit is not null) 
         {
-            yield return new DbCommitDTO(newestCommit.AuthorName, newestCommit.Date);
+            yield return new DbCommitDTO(newestCommit.SHA, newestCommit.AuthorName, newestCommit.Date);
             newestCommit = nextCommit;
             nextCommit = newestCommit!.ParentCommit;
         }
@@ -46,9 +48,13 @@ public class PersistentStorage : IPersistentStorage
         {
             return Response.Conflict;
         }
+        
+        if(!Repository.IsValid(dbRepositoryCreate.Filepath))
+        {
+            return Response.BadRequest;
+        }
 
         DbCommit? newestCommit;
-
         var realNewestCommit = new Repository(dbRepositoryCreate.Filepath).Commits.FirstOrDefault();
         if(realNewestCommit is null) newestCommit = null;
         else newestCommit = CreateDbCommit(realNewestCommit);
@@ -90,14 +96,9 @@ public class PersistentStorage : IPersistentStorage
             {
                 return (Response.Found, null);
             }
-            var commit = _context.Commits.Find(repo.NewestCommit.SHA); // We need to test if repo.NewestCommit is null
-            if (commit is null)
-            {
-                return (Response.Found, null);
-            }
             else
             {
-                return (Response.Found, commit);
+                return (Response.Found, repo.NewestCommit);
             }
         }
     }
@@ -105,7 +106,7 @@ public class PersistentStorage : IPersistentStorage
     public bool IsUpToDate(string filePath, DbCommit? newestCommitDb)
     {
         var repo = new Repository(filePath);
-        Commit? newestCommit = FindRealNewestCommit(repo);
+        Commit? newestCommit = repo.Commits.FirstOrDefault();
         if (newestCommit is null && newestCommitDb is null) return true;
         if (newestCommit is null || newestCommitDb is null) return false;
         if (newestCommitDb.SHA == newestCommit.Sha) return true;
@@ -113,19 +114,34 @@ public class PersistentStorage : IPersistentStorage
         return false;
     }
 
-    public Commit? FindRealNewestCommit(Repository repo) => repo.Commits.FirstOrDefault();
-
     public Response Update(string filePath)
     {
-        var repo = _context.Repositories.Find(filePath);
-
-        if (repo is null) return Response.NotFound;
-
-        _context.Repositories.Remove(repo);
-        _context.SaveChanges();
+        Response response = Delete(filePath);
+        if(response == Response.NotFound)
+        {
+            return response;
+        }
 
         Create(new DbRepositoryCreateDTO(filePath));
 
         return Response.Updated;
+    }
+
+    public Response Delete(string filePath) 
+    {
+        var repo = _context.Repositories.Find(filePath);
+        if (repo is null) return Response.NotFound;
+
+        foreach (var commit in FindAllCommitsFromNewestCommit(repo.NewestCommit))
+        {
+            _context.Commits
+            .Where(c => c.SHA == commit.SHA)
+            .ForEachAsync(c => _context.Commits.Remove(c));
+        }
+
+        _context.Repositories.Remove(repo);
+        _context.SaveChanges();
+
+        return Response.NoContent;
     }
 }

@@ -5,5 +5,7 @@ public enum Response {
     Found, 
     Updated, 
     Created, 
-    Conflict
+    Conflict,
+    BadRequest,
+    NoContent
 }

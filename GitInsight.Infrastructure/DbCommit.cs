@@ -4,11 +4,11 @@ public class DbCommit
 {
     [Required]
     [Key]
-    public string SHA {get; set;}
+    public string SHA {get; set;} = null!;
 
     [Required]
     [MaxLength(50)]
-    public string AuthorName {get; set;}
+    public string AuthorName {get; set;} = null!;
 
     [Required]
     public DateTime Date {get; set;}
