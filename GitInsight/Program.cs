@@ -16,18 +16,24 @@ public class Program
     }
     public static void Main(string[] args)
     {
-        var result = Parser.Default.ParseArguments<Options>(args);            
-        var gitCommitTracker = new GitCommitTracker(result.Value.RepoPath);
+        var input = Parser.Default.ParseArguments<Options>(args);            
+        var gitCommitTracker = new GitCommitTracker();
         
-        if (result.Value.AuthorMode)
+        var factory = new PersistentStorageContextFactory();
+        var context = factory.CreateDbContext(Array.Empty<string>());
+        var persistentDataStorage = new PersistentStorage(context);
+        
+        var commitsToAnalyze = persistentDataStorage.FindAllCommits(input.Value.RepoPath);
+        
+        if (input.Value.AuthorMode)
         {
             Console.WriteLine("-------AUTHOR COMMITS-------");
-            gitCommitTracker.GetCommitAuthor().ToList().ForEach(Console.WriteLine);
+            gitCommitTracker.GetCommitAuthor(commitsToAnalyze).ToList().ForEach(Console.WriteLine);
         }
         else
         {
             Console.WriteLine("-------COMMIT FREQUENCY-------");
-            gitCommitTracker.GetCommitFrequency().ToList().ForEach(Console.WriteLine);
+            gitCommitTracker.GetCommitFrequency(commitsToAnalyze).ToList().ForEach(Console.WriteLine);
         }
     }
 }
