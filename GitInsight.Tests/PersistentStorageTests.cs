@@ -16,6 +16,7 @@ public class PersistentStorageTests : IDisposable
     private readonly string _extractPath;
     private readonly string _emptyRepoPath;
     private readonly string _singleCommitRepoPath;
+
     private const string NonexistingFilepath = "/newPath"; // Does not exist in database
 
     public PersistentStorageTests()
@@ -41,9 +42,10 @@ public class PersistentStorageTests : IDisposable
         _persistentStorage = new PersistentStorage(_context);
 
         _persistentStorage.Create(new DbRepositoryCreateDTO(_emptyRepoPath));
+
         _context.SaveChanges();
     }
-    
+    /*
     [Fact]
     public void Find_Existing_Repository_Without_Commit_Returns_Response_And_Null()
     {
@@ -51,6 +53,7 @@ public class PersistentStorageTests : IDisposable
         
         // Act
         var (response, commit) = _persistentStorage.FindNewestCommit(_emptyRepoPath);
+
         // Assert
         commit.Should().BeNull();
         response.Should().Be(Response.Found);
@@ -65,6 +68,7 @@ public class PersistentStorageTests : IDisposable
         _persistentStorage.Create(new DbRepositoryCreateDTO(_singleCommitRepoPath));
         // Act
         var (response, commit) = _persistentStorage.FindNewestCommit(_singleCommitRepoPath);
+
         // Assert
         commit!.SHA.Should().Be(realCommit.Sha);
         response.Should().Be(Response.Found);
@@ -141,8 +145,7 @@ public class PersistentStorageTests : IDisposable
         // Assert
         actual.Should().Be(Response.BadRequest);
     }
-    
-    
+
     public void Dispose()
     {
         System.IO.Directory.Delete(_extractPath, true);
