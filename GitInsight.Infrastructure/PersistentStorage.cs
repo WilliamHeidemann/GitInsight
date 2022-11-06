@@ -34,7 +34,7 @@ public class PersistentStorage : IPersistentStorage
         DbCommit? nextCommit = newestCommit.ParentCommit;
         while (newestCommit is not null) 
         {
-            yield return new DbCommitDTO(newestCommit.SHA, newestCommit.AuthorName, newestCommit.Date);
+            yield return new DbCommitDTO(newestCommit.AuthorName, newestCommit.Date);
 
             newestCommit = nextCommit;
             nextCommit = newestCommit!.ParentCommit;
@@ -133,13 +133,6 @@ public class PersistentStorage : IPersistentStorage
     {
         var repo = _context.Repositories.Find(filePath);
         if (repo is null) return Response.NotFound;
-
-        foreach (var commit in FindAllCommitsFromNewestCommit(repo.NewestCommit))
-        {
-            _context.Commits
-            .Where(c => c.SHA == commit.SHA)
-            .ForEachAsync(c => _context.Commits.Remove(c));
-        }
 
         _context.Repositories.Remove(repo);
         _context.SaveChanges();
