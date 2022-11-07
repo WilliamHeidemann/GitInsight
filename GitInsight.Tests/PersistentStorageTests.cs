@@ -13,23 +13,21 @@ public class PersistentStorageTests : IDisposable
     private readonly SqliteConnection _connection;
     private readonly PersistentStorageContext _context; 
     private readonly PersistentStorage _persistentStorage;
-    private readonly string _extractPath;
-    private readonly string _emptyRepoPath;
-    private readonly string _singleCommitRepoPath;
+    private const string ExtractPath = "../../../test-repo/new-unzipped/";
+    private const string EmptyRepoPath = ExtractPath + "Empty-test-repo/.git";
+    private const string SingleCommitRepoPath = ExtractPath + "Single-commit-repo/.git";
+    private const string TwoCommitRepoPath = ExtractPath + "Two-commit-repo/.git";
+    private const string ThreeCommitRepoPath = ExtractPath + "Multiple-commit-repo/.git";
 
     private const string NonexistingFilepath = "/newPath"; // Does not exist in database
 
     public PersistentStorageTests()
     {
         string zipPath = "../../../test-repo/NewTestRepos.zip";
-        _extractPath = "../../../test-repo/new-unzipped/";
 
-        _emptyRepoPath = _extractPath + "Empty-test-repo/.git";
-        _singleCommitRepoPath = _extractPath + "Single-commit-repo/.git";
-
-        System.IO.Directory.CreateDirectory(_extractPath);
+        System.IO.Directory.CreateDirectory(ExtractPath);
         
-        ZipFile.ExtractToDirectory(zipPath, _extractPath);
+        ZipFile.ExtractToDirectory(zipPath, ExtractPath);
 
 
         _connection = new SqliteConnection("Filename=:memory:");
@@ -41,7 +39,7 @@ public class PersistentStorageTests : IDisposable
 
         _persistentStorage = new PersistentStorage(_context);
 
-        _persistentStorage.Create(new DbRepositoryCreateDTO(_emptyRepoPath));
+        _persistentStorage.Create(new DbRepositoryCreateDTO(EmptyRepoPath));
 
         _context.SaveChanges();
     }
@@ -52,7 +50,7 @@ public class PersistentStorageTests : IDisposable
         // Arrange
         
         // Act
-        var (response, commit) = _persistentStorage.FindNewestCommit(_emptyRepoPath);
+        var (response, commit) = _persistentStorage.FindNewestCommit(EmptyRepoPath);
 
         // Assert
         commit.Should().BeNull();
@@ -64,15 +62,26 @@ public class PersistentStorageTests : IDisposable
     public void FindNewestCommit_From_Existing_Repository_With_Single_Commit_Returns_Response_And_Commit()
     {
         // Arrange
-        var realCommit = new Repository(_singleCommitRepoPath).Commits.FirstOrDefault()!;
-        _persistentStorage.Create(new DbRepositoryCreateDTO(_singleCommitRepoPath));
+        var realCommit = new Repository(SingleCommitRepoPath).Commits.FirstOrDefault()!;
+        _persistentStorage.Create(new DbRepositoryCreateDTO(SingleCommitRepoPath));
         // Act
-        var (response, commit) = _persistentStorage.FindNewestCommit(_singleCommitRepoPath);
+        var (response, commit) = _persistentStorage.FindNewestCommit(SingleCommitRepoPath);
 
         // Assert
         commit!.SHA.Should().Be(realCommit.Sha);
         response.Should().Be(Response.Found);
     }
+
+    [Fact]
+    public void FindAllCommits_With_Repo_With_Two_Commits_Returns_Commits_In_Right_Order() 
+    {
+        // Arrange
+        
+        // Act
+
+        // Assert
+    }
+
     /*
     [Fact]
     public void Update_Existing_Repository_Returns_Response_Updated()
@@ -93,6 +102,7 @@ public class PersistentStorageTests : IDisposable
         commit!.SHA.Should().Be(realRepo.Commits.FirstOrDefault()!.Sha);
     }
     */
+    
     [Fact]
     public void Update_Nonexisting_Repository_Returns_Response_Notfound()
     {
@@ -106,14 +116,30 @@ public class PersistentStorageTests : IDisposable
         response.Should().Be(Response.NotFound);
     }
 
+    [InlineData(SingleCommitRepoPath)]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]
+    [Theory]
+    public void Create_Returns_Created_For_Valid_Repos(string repoPath)
+    {
+        // Arrange
+        var dbRepo = new DbRepositoryCreateDTO(repoPath);
+        
+        // Act        
+        var response = _persistentStorage.Create(dbRepo);
+
+        // Assert
+        response.Should().Be(Response.Created);
+    }
+
     [Fact]
     public void Create_Existing_Repository_Returns_Response_Conflict()
     {
         // Arrange
-        var dbRepo = new DbRepositoryCreateDTO(_extractPath);
+        var dbRepo = new DbRepositoryCreateDTO(EmptyRepoPath);
         
         // Act        
-        var response = _persistentStorage.Create(new DbRepositoryCreateDTO(_emptyRepoPath));
+        var response = _persistentStorage.Create(dbRepo);
 
         // Assert
         response.Should().Be(Response.Conflict);
@@ -124,7 +150,7 @@ public class PersistentStorageTests : IDisposable
     public void Create_valid_Repository_Returns_Created() 
     {
          // Arrange
-        var dbRepo = new DbRepositoryCreateDTO(_singleCommitRepoPath);
+        var dbRepo = new DbRepositoryCreateDTO(SingleCommitRepoPath);
         
         // Act
         var response = _persistentStorage.Create(dbRepo);
@@ -148,7 +174,7 @@ public class PersistentStorageTests : IDisposable
 
     public void Dispose()
     {
-        System.IO.Directory.Delete(_extractPath, true);
+        System.IO.Directory.Delete(ExtractPath, true);
 
         _context.Dispose();
         _connection.Dispose();
