@@ -22,7 +22,7 @@ public class PersistentStorage : IPersistentStorage
         (_, newestCommit) = FindNewestCommit(filePath);
         return FindAllCommitsFromNewestCommit(newestCommit);
     }
-    private IEnumerable<DbCommitDTO> FindAllCommitsFromNewestCommit(DbCommit? newestCommit)
+    public IEnumerable<DbCommitDTO> FindAllCommitsFromNewestCommit(DbCommit? newestCommit)
     {
         while (newestCommit is not null)
         {

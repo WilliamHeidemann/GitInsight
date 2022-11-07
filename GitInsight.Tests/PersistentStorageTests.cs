@@ -56,30 +56,40 @@ public class PersistentStorageTests : IDisposable
         commit.Should().BeNull();
         response.Should().Be(Response.Found);
     }
-    
 
-    [Fact]
-    public void FindNewestCommit_From_Existing_Repository_With_Single_Commit_Returns_Response_And_Commit()
+    [InlineData(SingleCommitRepoPath)]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]
+    [Theory]
+    public void FindNewestCommit_From_Existing_Repository_Returns_Response_And_NewestCommit(string repoPath)
     {
         // Arrange
-        var realCommit = new Repository(SingleCommitRepoPath).Commits.FirstOrDefault()!;
-        _persistentStorage.Create(new DbRepositoryCreateDTO(SingleCommitRepoPath));
+        var realCommit = new Repository(repoPath).Commits.FirstOrDefault()!;
+        _persistentStorage.Create(new DbRepositoryCreateDTO(repoPath));
         // Act
-        var (response, commit) = _persistentStorage.FindNewestCommit(SingleCommitRepoPath);
+        var (response, commit) = _persistentStorage.FindNewestCommit(repoPath);
 
         // Assert
         commit!.SHA.Should().Be(realCommit.Sha);
         response.Should().Be(Response.Found);
     }
 
-    [Fact]
-    public void FindAllCommits_With_Repo_With_Two_Commits_Returns_Commits_In_Right_Order() 
+    [InlineData(SingleCommitRepoPath)]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]
+    [Theory]
+    public void FindAllCommitsFromNewestCommit_Returns_Commits_In_Right_Order(string repoPath) 
     {
         // Arrange
-        
+        var realCommits = new Repository(repoPath).Commits.AsEnumerable();
+        _persistentStorage.Create(new DbRepositoryCreateDTO(repoPath));
+        var (response, newCommit) = _persistentStorage.FindNewestCommit(repoPath);
+
         // Act
+        var commits = _persistentStorage.FindAllCommitsFromNewestCommit(newCommit);
 
         // Assert
+        commits.Should().BeEquivalentTo(realCommits);
     }
 
     /*
