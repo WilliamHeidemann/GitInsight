@@ -87,9 +87,13 @@ public class PersistentStorageTests : IDisposable
 
         // Act
         var commits = _persistentStorage.FindAllCommitsFromNewestCommit(newCommit);
+        var realAndDbCommits = commits.Zip(realCommits);
 
         // Assert
-        commits.Should().BeEquivalentTo(realCommits);
+        foreach(var item in realAndDbCommits) 
+        {
+            item.First.SHA.Should().Be(item.Second.Sha);
+        }
     }
 
     /*

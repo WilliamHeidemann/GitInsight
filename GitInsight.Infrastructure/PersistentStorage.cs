@@ -20,13 +20,24 @@ public class PersistentStorage : IPersistentStorage
             Update(filePath);
         }
         (_, newestCommit) = FindNewestCommit(filePath);
-        return FindAllCommitsFromNewestCommit(newestCommit);
+        var commits = FindAllCommitsFromNewestCommit(newestCommit);
+        
+        return ConvertUpdateDTO2DTO(commits); 
     }
-    public IEnumerable<DbCommitDTO> FindAllCommitsFromNewestCommit(DbCommit? newestCommit)
+
+    private IEnumerable<DbCommitDTO> ConvertUpdateDTO2DTO(IEnumerable<DbCommitUpdateDTO> commits)
+    {
+        foreach (var commit in commits) 
+        {
+            yield return new DbCommitDTO(commit.AuthorName, commit.Date);
+        }
+    }
+
+    public IEnumerable<DbCommitUpdateDTO> FindAllCommitsFromNewestCommit(DbCommit? newestCommit)
     {
         while (newestCommit is not null)
         {
-            yield return new DbCommitDTO(newestCommit.AuthorName, newestCommit.Date);
+            yield return new DbCommitUpdateDTO(newestCommit.SHA, newestCommit.AuthorName, newestCommit.Date);
             newestCommit = newestCommit.ParentCommit;
         }
     }
