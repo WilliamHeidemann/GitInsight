@@ -92,7 +92,7 @@ public class PersistentStorageTests : IDisposable
         
         commit!.SHA.Should().Be(realRepo.Commits.FirstOrDefault()!.Sha);
     }
-*/
+    */
     [Fact]
     public void Update_Nonexisting_Repository_Returns_Response_Notfound()
     {
