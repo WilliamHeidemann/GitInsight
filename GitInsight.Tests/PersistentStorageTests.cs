@@ -144,20 +144,6 @@ public class PersistentStorageTests : IDisposable
         // Assert
         response.Should().Be(Response.Conflict);
     }
-    
-
-    [Fact]
-    public void Create_valid_Repository_Returns_Created() 
-    {
-         // Arrange
-        var dbRepo = new DbRepositoryCreateDTO(SingleCommitRepoPath);
-        
-        // Act
-        var response = _persistentStorage.Create(dbRepo);
-
-        // Assert
-        response.Should().Be(Response.Created);
-    }
 
     [Fact]
     public void Create_Nonexisting_Repository_Returns_Bad_Request()
