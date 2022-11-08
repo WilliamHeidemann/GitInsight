@@ -1,12 +1,5 @@
-using System.Collections;
-using System.Reflection;
-using LibGit2Sharp;
-using System.IO.Compression;
-using GitInsight.Core;
-using Moq;
-
 namespace GitInsight.Tests;
-
+/*
 public class GitCommitTrackerTests
 {
     [Fact]
@@ -44,3 +37,4 @@ public class GitCommitTrackerTests
         result.Should().BeEquivalentTo(expectedOutput);
     }
 }
+*/
