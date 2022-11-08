@@ -499,6 +499,7 @@ fabric.properties
 # Ignore all local history of files
 .history
 .ionide
+.DS_store
 
 ### VisualStudio ###
 
