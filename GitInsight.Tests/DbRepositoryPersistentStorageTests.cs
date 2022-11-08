@@ -84,6 +84,79 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         id.Should().Be(-1);
     }
 
+    [Fact]
+    public async Task Find_Existing_Empty_Repository_Returns_DTO_And_Found()
+    {
+        // Arrange
+        
+        // Act
+        var (dto, response) = await _dbRepositoryPersistentStorage.FindAsync(EmptyRepoPath);
+
+        // Assert
+        response.Should().Be(Response.Found);
+        dto!.Filepath.Should().Be(EmptyRepoPath);
+    }
+
+    [Fact]
+    public async Task Find_NonExisting_Repository_Returns_null_And_NotFound()
+    {
+        // Arrange
+        
+        // Act
+        var (dto, response) = await _dbRepositoryPersistentStorage.FindAsync(NonexistingFilepath);
+
+        // Assert
+        response.Should().Be(Response.NotFound);
+        dto.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task Update_NonExisting_Repository_Returns_NotFound()
+    {
+        // Arrange
+        
+        // Act
+        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(1, NonexistingFilepath));
+
+        // Assert
+        response.Should().Be(Response.NotFound);
+    }
+
+    [Fact]
+    public async Task Update_Existing_Repository_Returns_Updated()
+    {
+        // Arrange
+        
+        // Act
+        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(1, EmptyRepoPath));
+
+        // Assert
+        response.Should().Be(Response.Updated);
+    }
+
+    [Fact]
+    public async Task Update_Existing_Repository_Returns_Updated2()
+    {
+        // Arrange
+        _context.Repositories.Add(new DbRepository {
+            FilePath = SingleCommitRepoPath
+        });
+        _context.SaveChanges();
+
+        var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == SingleCommitRepoPath);
+        var realRepo = new Repository(SingleCommitRepoPath);
+
+        
+        // Act
+        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(5, SingleCommitRepoPath));
+
+        // Assert
+        response.Should().Be(Response.Updated);
+
+        repo!.NewestCommitSHA.Should().Be(realRepo.Commits.FirstOrDefault()!.Sha);
+
+    }
+
     public void Dispose()
     {
         System.IO.Directory.Delete(ExtractPath, true);

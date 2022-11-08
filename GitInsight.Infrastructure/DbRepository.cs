@@ -9,5 +9,5 @@ public class DbRepository
     [Required]
     public string FilePath { get; init; } = null!;
 
-    public string? NewestCommitSHA { get; init; }
+    public string? NewestCommitSHA { get; set; }
 }

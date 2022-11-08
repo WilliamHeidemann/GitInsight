@@ -44,13 +44,36 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
         return (id, Response.Created);
     }
 
-    public Task<(DbRepositoryDTO?, Response)> FindAsync(string filePath)
+    public async Task<(DbRepositoryDTO?, Response)> FindAsync(string filePath)
     {
-        throw new NotImplementedException();
+        var repo = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == filePath);
+        if(repo is null) return (null, Response.NotFound);
+        return (new DbRepositoryDTO(repo.Id, repo.FilePath, repo.NewestCommitSHA!), Response.Found);
     }
 
-    public Task<Response> UpdateAsync(DbRepositoryUpdateDTO dbRepositoryUpdateDTO)
+    public async Task<Response> UpdateAsync(DbRepositoryUpdateDTO dbRepositoryUpdateDTO)
     {
-        throw new NotImplementedException();
+        var repo = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == dbRepositoryUpdateDTO.FilePath);
+
+        if(repo is null) return Response.NotFound;
+
+        var realRepo = new Repository(dbRepositoryUpdateDTO.FilePath);
+
+        realRepo.Commits.ToList().ForEach(c => {
+            var commit = _context.Commits.FirstOrDefault(t => t.SHA == c.Sha);
+            if (commit is null) {
+                _context.Commits.Add(new DbCommit {
+                SHA = c.Sha,
+                AuthorName = c.Committer.Name,
+                Date = c.Committer.When.DateTime,
+                RepoId = dbRepositoryUpdateDTO.RepoId
+            });
+            }
+        });
+        _context.SaveChanges();
+        repo.NewestCommitSHA = realRepo.Commits.FirstOrDefault()?.Sha;
+
+        return Response.Updated;
+
     }
 }
