@@ -31,17 +31,14 @@ public class DbRepositoryPersistentStorageTests : IDisposable
 
         _dbRepositoryPersistentStorage = new DbRepositoryPersistentStorage(_context);
 
-        _context.Repositories.Add(new DbRepository {
-            FilePath = EmptyRepoPath
-        });
-
+        _context.Repositories.Add(new DbRepository(EmptyRepoPath));
         _context.SaveChanges();
     }
 
     [InlineData(SingleCommitRepoPath)]
-//    [InlineData(TwoCommitRepoPath)]
-//    [InlineData(ThreeCommitRepoPath)]
-    [Theory(Skip = "Not currently Implemented")]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]
+    [Theory]
     public async Task Create_Returns_Created_For_Valid_Repos(string repoPath)
     {
         // Arrange
@@ -49,11 +46,11 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         
         // Act        
         var (id, response) = await _dbRepositoryPersistentStorage.CreateAsync(dbRepo);
-        var expectedId = _context.Repositories.FirstAsync(r => r.FilePath == repoPath).Id;
+        var expected = _context.Repositories.FirstOrDefault(r => r.FilePath == repoPath);
 
         // Assert
         response.Should().Be(Response.Created);
-        id.Should().Be(expectedId);
+        id.Should().Be(expected!.Id);
     }
 
     [Fact]

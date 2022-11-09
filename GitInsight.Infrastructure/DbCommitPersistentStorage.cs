@@ -10,9 +10,9 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
 
     public async Task<(string, Response)> CreateAsync(DbCommitCreateDTO dbCommitCreate)
     {
-        var commit = await _context.Commits.FirstOrDefaultAsync(c => c.SHA == dbCommitCreate.SHA);
-        if(commit is not null) return (commit.SHA, Response.Conflict);
-        await _context.Commits.AddAsync(new DbCommit {
+        var entity = await _context.Commits.FirstOrDefaultAsync(c => c.SHA == dbCommitCreate.SHA);
+        if(entity is not null) return (entity.SHA, Response.Conflict);
+        _context.Commits.Add(new DbCommit {
             SHA = dbCommitCreate.SHA,
             AuthorName = dbCommitCreate.AuthorName,
             Date = dbCommitCreate.Date,
