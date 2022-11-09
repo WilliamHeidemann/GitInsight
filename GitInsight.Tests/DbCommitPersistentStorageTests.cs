@@ -1,6 +1,6 @@
 namespace GitInsight.Tests;
 
-public class DbCommitPersistentStorageTests 
+public class DbCommitPersistentStorageTests : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly PersistentStorageContext _context; 
@@ -161,5 +161,11 @@ public class DbCommitPersistentStorageTests
         // Assert
         commit.Should().BeNull();
         response.Should().Be(Response.NotFound);
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
+        _connection.Dispose();
     }
 } 
