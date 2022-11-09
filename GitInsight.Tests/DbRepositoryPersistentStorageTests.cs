@@ -35,11 +35,11 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         _context.SaveChanges();
     }
 
-    [InlineData(SingleCommitRepoPath)]
-    [InlineData(TwoCommitRepoPath)]
-    [InlineData(ThreeCommitRepoPath)]
+    [InlineData(SingleCommitRepoPath, 2)]
+    [InlineData(TwoCommitRepoPath, 2)]
+    [InlineData(ThreeCommitRepoPath, 2)]
     [Theory]
-    public async Task Create_Returns_Created_For_Valid_Repos(string repoPath)
+    public async Task Create_Returns_Created_For_Valid_Repos(string repoPath, int expectedId)
     {
         // Arrange
         var dbRepo = new DbRepositoryCreateDTO(repoPath);
@@ -50,7 +50,7 @@ public class DbRepositoryPersistentStorageTests : IDisposable
 
         // Assert
         response.Should().Be(Response.Created);
-        id.Should().Be(expected!.Id);
+        id.Should().Be(expectedId);
     }
 
     [Fact]
