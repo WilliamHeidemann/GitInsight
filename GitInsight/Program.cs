@@ -14,7 +14,7 @@ public class Program
         public bool AuthorMode { get; set; }
 
     }
-    public async static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         
         var input = Parser.Default.ParseArguments<Options>(args);            
