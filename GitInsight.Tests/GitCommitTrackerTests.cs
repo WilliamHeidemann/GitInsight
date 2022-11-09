@@ -1,5 +1,5 @@
 namespace GitInsight.Tests;
-/*
+
 public class GitCommitTrackerTests
 {
     [Fact]
@@ -7,9 +7,9 @@ public class GitCommitTrackerTests
     {
         //Arrange
         var commitTracker = new GitCommitTracker();
-        var commit1 = new DbCommitDTO("William", new DateTime(2022, 11, 5));
-        var commit2 = new DbCommitDTO("Rakul", new DateTime(2022, 11, 5));
-        var commit3 = new DbCommitDTO("Andreas", new DateTime(2022, 11, 6));
+        var commit1 = new DbCommitDTO("sha", "William", new DateTime(2022, 11, 5));
+        var commit2 = new DbCommitDTO("sha","Rakul", new DateTime(2022, 11, 5));
+        var commit3 = new DbCommitDTO("sha","Andreas", new DateTime(2022, 11, 6));
         var commitsToAnalyze = new List<DbCommitDTO> { commit1, commit2, commit3 };
 
         //Act
@@ -25,9 +25,9 @@ public class GitCommitTrackerTests
     {
         //Arrange
         var commitTracker = new GitCommitTracker();
-        var commit1 = new DbCommitDTO("William", new DateTime(2022, 11, 5));
-        var commit2 = new DbCommitDTO("Rakul", new DateTime(2022, 11, 5));
-        var commit3 = new DbCommitDTO("Andreas", new DateTime(2022, 11, 6));
+        var commit1 = new DbCommitDTO("sha", "William", new DateTime(2022, 11, 5));
+        var commit2 = new DbCommitDTO("sha", "Rakul", new DateTime(2022, 11, 5));
+        var commit3 = new DbCommitDTO("sha", "Andreas", new DateTime(2022, 11, 6));
         var commitsToAnalyze = new List<DbCommitDTO> { commit1, commit2, commit3 };
         //Act
         var result = commitTracker.GetCommitAuthor(commitsToAnalyze);
@@ -37,4 +37,3 @@ public class GitCommitTrackerTests
         result.Should().BeEquivalentTo(expectedOutput);
     }
 }
-*/
