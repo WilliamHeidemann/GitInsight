@@ -14,17 +14,17 @@ public class Program
         public bool AuthorMode { get; set; }
 
     }
-    public static void Main(string[] args)
+    public async static void Main(string[] args)
     {
-        /*
+        
         var input = Parser.Default.ParseArguments<Options>(args);            
         var gitCommitTracker = new GitCommitTracker();
         
         var factory = new PersistentStorageContextFactory();
         var context = factory.CreateDbContext(Array.Empty<string>());
-        var persistentDataStorage = new DbCommitPersistentStorage(context);
+        var persistentStorageController = new PersistentStorageController(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
         
-        var commitsToAnalyze = persistentDataStorage.FindAllCommits(input.Value.RepoPath);
+        var commitsToAnalyze = await persistentStorageController.FindAllCommitsAsync(input.Value.RepoPath);
         
         if (input.Value.AuthorMode)
         {
@@ -36,6 +36,6 @@ public class Program
             Console.WriteLine("-------COMMIT FREQUENCY-------");
             gitCommitTracker.GetCommitFrequency(commitsToAnalyze).ToList().ForEach(Console.WriteLine);
         }
-        */
+        
     }
 }
