@@ -54,6 +54,9 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
         if(repo is null) return Response.NotFound;
 
         var realRepo = new Repository(dbRepositoryUpdateDTO.FilePath);
+        var newestCommit = realRepo.Commits.FirstOrDefault();
+        var newestCommitSHA = newestCommit is not null ? newestCommit.Sha : null;
+        if(newestCommitSHA == repo.NewestCommitSHA) return Response.Updated;
 
         realRepo.Commits.ToList().ForEach(c => {
             var commit = _context.Commits.FirstOrDefault(t => t.SHA == c.Sha);
@@ -62,7 +65,7 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
                 SHA = c.Sha,
                 AuthorName = c.Committer.Name,
                 Date = c.Committer.When.DateTime,
-                RepoId = dbRepositoryUpdateDTO.RepoId
+                RepoId = repo.Id
             });
             }
         });
