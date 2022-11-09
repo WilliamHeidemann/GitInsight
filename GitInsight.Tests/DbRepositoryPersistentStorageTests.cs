@@ -160,7 +160,6 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == repoPath);
         var realRepo = new Repository(repoPath);
 
-        
         // Act
         var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(repoPath));
 
