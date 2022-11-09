@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using CommandLine;
 using GitInsight;
+using GitInsight.Core;
 using System.IO.Compression;
 
 public class Program
@@ -21,11 +22,22 @@ public class Program
         var gitCommitTracker = new GitCommitTracker();
         
         var factory = new PersistentStorageContextFactory();
-        var context = factory.CreateDbContext(Array.Empty<string>());
+        using var context = factory.CreateDbContext(Array.Empty<string>());
+        await context.Database.MigrateAsync();
+
         var persistentStorageController = new PersistentStorageController(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
         
-        var commitsToAnalyze = await persistentStorageController.FindAllCommitsAsync(input.Value.RepoPath);
-        
+        IEnumerable<DbCommitDTO> commitsToAnalyze;
+        try 
+        {
+            commitsToAnalyze = await persistentStorageController.FindAllCommitsAsync(input.Value.RepoPath);
+        } 
+        catch (RepositoryNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+            return;
+        }
+         
         if (input.Value.AuthorMode)
         {
             Console.WriteLine("-------AUTHOR COMMITS-------");
