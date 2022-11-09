@@ -113,7 +113,7 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         // Arrange
         
         // Act
-        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(1, NonexistingFilepath));
+        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(NonexistingFilepath));
 
         // Assert
         response.Should().Be(Response.NotFound);
@@ -125,25 +125,44 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         // Arrange
         
         // Act
-        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(1, EmptyRepoPath));
+        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(EmptyRepoPath));
 
         // Assert
         response.Should().Be(Response.Updated);
     }
 
-    [Fact]
-    public async Task Update_Existing_Repository_Returns_Updated2()
+    [InlineData(SingleCommitRepoPath)]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]    
+    [Theory]
+    public async Task Update_UpToDate_Repository_Returns_Updated(string repoPath)
     {
         // Arrange
-        _context.Repositories.Add(new DbRepository(SingleCommitRepoPath));
+        await _dbRepositoryPersistentStorage.CreateAsync(new DbRepositoryCreateDTO(repoPath));
+
+        // Act
+        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(repoPath));
+
+        // Assert
+        response.Should().Be(Response.Updated);
+    }
+
+    [InlineData(SingleCommitRepoPath)]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]
+    [Theory]
+    public async Task Update_Existing_Repository_Returns_Updated2(string repoPath)
+    {
+        // Arrange
+        _context.Repositories.Add(new DbRepository(repoPath));
         _context.SaveChanges();
 
-        var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == SingleCommitRepoPath);
-        var realRepo = new Repository(SingleCommitRepoPath);
+        var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == repoPath);
+        var realRepo = new Repository(repoPath);
 
         
         // Act
-        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(5, SingleCommitRepoPath));
+        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(repoPath));
 
         // Assert
         response.Should().Be(Response.Updated);
