@@ -10,24 +10,20 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
 
     public async Task<(int, Response)> CreateAsync(DbRepositoryCreateDTO dbRepositoryCreate)
     {
-        var repo = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == dbRepositoryCreate.Filepath);
-        if(repo is not null) return (repo.Id, Response.Conflict);
+        var entity = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == dbRepositoryCreate.Filepath);
+        if(entity is not null) return (entity.Id, Response.Conflict);
         if (!Repository.IsValid(dbRepositoryCreate.Filepath)) return (-1, Response.BadRequest); //-1 because it is not a valid repo
         
         var realRepo = new Repository(dbRepositoryCreate.Filepath);
         var newestCommit = realRepo.Commits.FirstOrDefault();
-        var newestCommitSHA = newestCommit is not null ? newestCommit.Sha : null;
 
-        var dbRepo = new DbRepository{
-            FilePath = dbRepositoryCreate.Filepath,
-            NewestCommitSHA = newestCommitSHA
-        };
+        entity = new DbRepository(dbRepositoryCreate.Filepath);
+        entity.NewestCommitSHA = newestCommit is not null ? newestCommit.Sha : null;
 
-        await _context.Repositories.AddAsync(dbRepo);
+        _context.Repositories.Add(entity);
         await _context.SaveChangesAsync();
 
-        var repository = await _context.Repositories.FirstAsync(r => r.FilePath == dbRepositoryCreate.Filepath);
-        var id = repository.Id;
+        var id = entity.Id;
         
 
         realRepo.Commits.ToList().ForEach(c => {

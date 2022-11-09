@@ -31,25 +31,22 @@ public class DbRepositoryPersistentStorageTests : IDisposable
 
         _dbRepositoryPersistentStorage = new DbRepositoryPersistentStorage(_context);
 
-        _context.Repositories.Add(new DbRepository {
-            FilePath = EmptyRepoPath
-        });
-
+        _context.Repositories.Add(new DbRepository(EmptyRepoPath));
         _context.SaveChanges();
     }
 
-    [InlineData(SingleCommitRepoPath)]
-//    [InlineData(TwoCommitRepoPath)]
-//    [InlineData(ThreeCommitRepoPath)]
-    [Theory(Skip = "Not currently Implemented")]
-    public async Task Create_Returns_Created_For_Valid_Repos(string repoPath)
+    [InlineData(SingleCommitRepoPath, 2)]
+    [InlineData(TwoCommitRepoPath, 2)]
+    [InlineData(ThreeCommitRepoPath, 2)]
+    [Theory]
+    public async Task Create_Returns_Created_For_Valid_Repos(string repoPath, int expectedId)
     {
         // Arrange
         var dbRepo = new DbRepositoryCreateDTO(repoPath);
         
         // Act        
         var (id, response) = await _dbRepositoryPersistentStorage.CreateAsync(dbRepo);
-        var expectedId = _context.Repositories.FirstAsync(r => r.FilePath == repoPath).Id;
+        var expected = _context.Repositories.FirstOrDefault(r => r.FilePath == repoPath);
 
         // Assert
         response.Should().Be(Response.Created);
@@ -138,9 +135,7 @@ public class DbRepositoryPersistentStorageTests : IDisposable
     public async Task Update_Existing_Repository_Returns_Updated2()
     {
         // Arrange
-        _context.Repositories.Add(new DbRepository {
-            FilePath = SingleCommitRepoPath
-        });
+        _context.Repositories.Add(new DbRepository(SingleCommitRepoPath));
         _context.SaveChanges();
 
         var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == SingleCommitRepoPath);
