@@ -4,7 +4,15 @@ public class DbRepository
 {
     [Required]
     [Key]
-    public string FilePath { get; init; } = null!;
+    public int Id {get; init;}
 
-    public DbCommit? NewestCommit { get; init; }
+    [Required]
+    public string FilePath { get; init; }
+
+    public string? NewestCommitSHA { get; set; }
+
+    public DbRepository(string filePath) 
+    {
+        this.FilePath = filePath;
+    }
 }

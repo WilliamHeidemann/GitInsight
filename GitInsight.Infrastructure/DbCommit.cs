@@ -13,5 +13,6 @@ public class DbCommit
     [Required]
     public DateTime Date {get; set;}
 
-    public DbCommit? ParentCommit {get; set;}
+    [Required]
+    public int RepoId {get; set;}
 }

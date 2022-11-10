@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using CommandLine;
 using GitInsight;
+using GitInsight.Core;
 using System.IO.Compression;
 
 public class Program
@@ -14,17 +15,29 @@ public class Program
         public bool AuthorMode { get; set; }
 
     }
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
+        
         var input = Parser.Default.ParseArguments<Options>(args);            
         var gitCommitTracker = new GitCommitTracker();
         
         var factory = new PersistentStorageContextFactory();
-        var context = factory.CreateDbContext(Array.Empty<string>());
-        var persistentDataStorage = new PersistentStorage(context);
+        using var context = factory.CreateDbContext(Array.Empty<string>());
+        await context.Database.MigrateAsync();
+
+        var persistentStorageController = new PersistentStorageController(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
         
-        var commitsToAnalyze = persistentDataStorage.FindAllCommits(input.Value.RepoPath);
-        
+        IEnumerable<DbCommitDTO> commitsToAnalyze;
+        try 
+        {
+            commitsToAnalyze = await persistentStorageController.FindAllCommitsAsync(input.Value.RepoPath);
+        } 
+        catch (RepositoryNotFoundException e)
+        {
+            Console.WriteLine(e.Message);
+            return;
+        }
+         
         if (input.Value.AuthorMode)
         {
             Console.WriteLine("-------AUTHOR COMMITS-------");
@@ -35,5 +48,6 @@ public class Program
             Console.WriteLine("-------COMMIT FREQUENCY-------");
             gitCommitTracker.GetCommitFrequency(commitsToAnalyze).ToList().ForEach(Console.WriteLine);
         }
+        
     }
 }
