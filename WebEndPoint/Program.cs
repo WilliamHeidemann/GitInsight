@@ -1,3 +1,5 @@
+using GitInsight;
+
 namespace WebEndPoint
 {
     public class Program
@@ -26,24 +28,27 @@ namespace WebEndPoint
 
             app.UseAuthorization();
 
-            var summaries = new[]
+            app.MapGet("frequency/{githubOrganization}/{repositoryName}", async (
+                    string githubOrganization,
+                    string repositoryName,
+                    GitCommitTracker tracker,
+                    PersistentStorageController controller)
+                =>
             {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+                var commits = await controller.FindAllCommitsAsync(repositoryName);
+                return tracker.GetCommitFrequency(commits);
+            });
 
-            app.MapGet("/weatherforecast", (HttpContext httpContext) =>
+            app.MapGet("author/{githubOrganization}/{repositoryName}", async (
+                    string githubOrganization,
+                    string repositoryName,
+                    GitCommitTracker tracker,
+                    PersistentStorageController controller)
+                =>
             {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                    new WeatherForecast
-                    {
-                        Date = DateTime.Now.AddDays(index),
-                        TemperatureC = Random.Shared.Next(-20, 55),
-                        Summary = summaries[Random.Shared.Next(summaries.Length)]
-                    })
-                    .ToArray();
-                return forecast;
-            })
-            .WithName("GetWeatherForecast");
+                var commits = await controller.FindAllCommitsAsync(repositoryName);
+                return tracker.GetCommitAuthor(commits);
+            });
 
             app.Run();
         }
