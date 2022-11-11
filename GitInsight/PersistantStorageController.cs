@@ -15,7 +15,7 @@ public class PersistentStorageController
 
     public async Task<IEnumerable<DbCommitDTO>> FindAllCommitsAsync(string filePath)
     {     
-        if(!Repository.IsValid(filePath)) throw new RepositoryNotFoundException("The Repository does not exist. Please provide a valid filepath.");
+        if(!LibGit2Sharp.Repository.IsValid(filePath)) throw new RepositoryNotFoundException("The Repository does not exist. Please provide a valid filepath.");
         var (id, response) = await _dbRepositoryPersistentStorage.CreateAsync(new DbRepositoryCreateDTO(filePath));
         if(response == Response.Conflict) await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(filePath));
         var (commits, findResponse) = await _dbCommitPersistentStorage.FindAllCommitsByRepoIdAsync(id);

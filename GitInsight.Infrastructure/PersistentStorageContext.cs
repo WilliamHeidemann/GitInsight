@@ -1,13 +1,26 @@
-﻿namespace GitInsight.Infrastructure;
+﻿
+namespace GitInsight.Infrastructure;
 
 public partial class PersistentStorageContext : DbContext
 {
-    public PersistentStorageContext(DbContextOptions<PersistentStorageContext> builderOptions)  : base(builderOptions){}
+    public virtual DbSet<DbRepository> Repositories {get; set; } = null!;
+    public virtual DbSet<DbCommit> Commits {get; set; } = null!;
 
-    public virtual DbSet<DbRepository> Repositories => Set<DbRepository>();
-    public virtual DbSet<DbCommit> Commits => Set<DbCommit>();
+    public PersistentStorageContext() {}
+    public PersistentStorageContext(DbContextOptions<PersistentStorageContext> builderOptions)  
+        : base(builderOptions)
+    { }
 
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if(!optionsBuilder.IsConfigured)
+        {
+            var configuration = new ConfigurationBuilder().AddUserSecrets<PersistentStorageContext>()
+                .Build();
+            var connectionString = configuration.GetConnectionString("GitInsight");
+            optionsBuilder.UseNpgsql(connectionString);
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -19,8 +32,10 @@ public partial class PersistentStorageContext : DbContext
             .IsUnique();
     }
 
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
     public void Clear()
     {
-     
+
     }
 }

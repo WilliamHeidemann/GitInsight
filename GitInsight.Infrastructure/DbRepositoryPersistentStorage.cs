@@ -12,9 +12,9 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
     {
         var entity = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == dbRepositoryCreate.Filepath);
         if(entity is not null) return (entity.Id, Response.Conflict);
-        if (!Repository.IsValid(dbRepositoryCreate.Filepath)) return (-1, Response.BadRequest); //-1 because it is not a valid repo
+        if (!LibGit2Sharp.Repository.IsValid(dbRepositoryCreate.Filepath)) return (-1, Response.BadRequest); //-1 because it is not a valid repo
         
-        var realRepo = new Repository(dbRepositoryCreate.Filepath);
+        var realRepo = new LibGit2Sharp.Repository(dbRepositoryCreate.Filepath);
         var newestCommit = realRepo.Commits.FirstOrDefault();
 
         entity = new DbRepository(dbRepositoryCreate.Filepath);
@@ -53,7 +53,7 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
 
         if(repo is null) return Response.NotFound;
 
-        var realRepo = new Repository(dbRepositoryUpdateDTO.FilePath);
+        var realRepo = new LibGit2Sharp.Repository(dbRepositoryUpdateDTO.FilePath);
         var newestCommit = realRepo.Commits.FirstOrDefault();
         var newestCommitSHA = newestCommit is not null ? newestCommit.Sha : null;
         if(newestCommitSHA == repo.NewestCommitSHA) return Response.Updated;
