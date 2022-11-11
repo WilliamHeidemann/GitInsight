@@ -1,23 +1,24 @@
 ﻿
 namespace GitInsight.Infrastructure;
 
-public class PersistentStorageContext : DbContext
+public partial class PersistentStorageContext : DbContext
 {
-    public PersistentStorageContext(DbContextOptions<PersistentStorageContext> builderOptions)  : base(builderOptions){}
+    public virtual DbSet<DbRepository> Repositories {get; set; } = null!;
+    public virtual DbSet<DbCommit> Commits {get; set; } = null!;
 
     public PersistentStorageContext() {}
-
-    public DbSet<DbRepository> Repositories => Set<DbRepository>();
-    public DbSet<DbCommit> Commits => Set<DbCommit>();
+    public PersistentStorageContext(DbContextOptions<PersistentStorageContext> builderOptions)  
+        : base(builderOptions)
+    { }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if(!optionsBuilder.IsConfigured){
-        var configuration = new ConfigurationBuilder().AddUserSecrets<PersistentStorageContext>()
-            .Build();
-        var connectionString = configuration.GetConnectionString("GitInsight");
-        Console.WriteLine(connectionString);
-        optionsBuilder.UseNpgsql(connectionString);
+        if(!optionsBuilder.IsConfigured)
+        {
+            var configuration = new ConfigurationBuilder().AddUserSecrets<PersistentStorageContext>()
+                .Build();
+            var connectionString = configuration.GetConnectionString("GitInsight");
+            optionsBuilder.UseNpgsql(connectionString);
         }
     }
 
@@ -29,5 +30,12 @@ public class PersistentStorageContext : DbContext
         modelBuilder.Entity<DbRepository>()
             .HasIndex(r => r.FilePath)
             .IsUnique();
+    }
+
+    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+    public void Clear()
+    {
+
     }
 }
