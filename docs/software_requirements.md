@@ -24,3 +24,7 @@
 - Results from analyzing repositories should be stored in a database
 - During development, recall design patterns that are relevant for the implementation.
 - The REST API shall return the analysis results via JSON objects.
+
+## Design decisions
+
+- When running without a switch, `GitInsight` assumes user wants to use `CommitFrequency` by default.
