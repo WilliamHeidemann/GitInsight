@@ -45,7 +45,6 @@ gitinsight --> () output
 ## Architectural Diagram of REST Api
 
 ```mermaid
-%%{init: {'theme': 'dark'} } %%
 graph LR;
     A[Client] --- B[GET];
     B --> C[CONTROLLER <br/> PersistentStorageController];
