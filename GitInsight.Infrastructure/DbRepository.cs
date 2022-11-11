@@ -2,11 +2,11 @@ namespace GitInsight.Infrastructure;
 
 public class DbRepository 
 {
-    [Required]
-    [Key]
+    // [Required]
+    // [Key]
     public int Id {get; init;}
 
-    [Required]
+    // [Required]
     public string FilePath { get; init; }
 
     public string? NewestCommitSHA { get; set; }

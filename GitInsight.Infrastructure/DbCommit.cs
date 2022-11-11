@@ -2,17 +2,17 @@ namespace GitInsight.Infrastructure;
 
 public class DbCommit
 {
-    [Required]
-    [Key]
+    //[Required]
+    //[Key]
     public string SHA {get; set;} = null!;
 
-    [Required]
-    [MaxLength(50)]
+    //[Required]
+    //[MaxLength(50)]
     public string AuthorName {get; set;} = null!;
 
-    [Required]
+    // [Required]
     public DateTime Date {get; set;}
 
-    [Required]
+    // [Required]
     public int RepoId {get; set;}
 }
