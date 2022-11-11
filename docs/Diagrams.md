@@ -53,3 +53,33 @@ graph LR;
     C --> |RESPONSE<br/> JSON OBJECT| A;
 ```
 
+## Activity Diagram of GitInsight GET-operations 
+
+NOT FINISHED!! Since JSON data not implemented yet
+
+```mermaid
+stateDiagram-v2
+    state if_state <<choice>>
+    [*] --> GET
+    GET --> FindAllCommitsAsync
+    FindAllCommitsAsync --> if_state
+    if_state --> RepositoryNotFoundException: is not valid repo
+    if_state --> CreateAsync : is valid repo
+
+    state if_state2 <<choice>>
+    POST_to_database : POST to database
+    CreateAsync --> if_state2
+    if_state2 --> POST_to_database : is not existing in DB
+    if_state2 --> UpdateAsync : is already existing in DB
+
+    PUT_to_DB : PUT to database
+    UpdateAsync --> PUT_to_DB
+
+    state if_state3 <<choice>>
+    POST_to_database --> if_state3
+    PUT_to_DB --> if_state3
+    if_state3 --> FindAllCommitsByRepoId
+    FindAllCommitsByRepoId --> JSON_data???
+    
+    JSON_data??? --> [*]
+```
