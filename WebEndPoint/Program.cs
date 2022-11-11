@@ -1,3 +1,4 @@
+using Azure.Core;
 using GitInsight;
 
 namespace WebEndPoint
@@ -35,7 +36,7 @@ namespace WebEndPoint
                     PersistentStorageController controller)
                 =>
             {
-                var commits = await controller.FindAllCommitsAsync(repositoryName);
+                var commits = await controller.FindAllCommitsAsync(githubOrganization + "/" + repositoryName);
                 return tracker.GetCommitFrequency(commits);
             });
 
