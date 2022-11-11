@@ -46,7 +46,7 @@ gitinsight --> () output
 
 ```mermaid
 %%{init: {'theme': 'dark'} } %%
-graph LR
+graph LR;
     A[Client] --- B[GET];
     B --> C[CONTROLLER <br/> PersistentStorageController];
     C --- D[GET<br/> POST<br/> PUT];
