@@ -2,6 +2,7 @@
 using GitInsight.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GitInsight.Infrastructure.Migrations
 {
     [DbContext(typeof(PersistentStorageContext))]
-    partial class PersistentStorageContextModelSnapshot : ModelSnapshot
+    [Migration("20221114210150_NewKeyForCommits")]
+    partial class NewKeyForCommits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
