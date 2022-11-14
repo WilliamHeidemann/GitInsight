@@ -26,6 +26,9 @@ namespace GitInsight.Infrastructure.Migrations
                     b.Property<string>("SHA")
                         .HasColumnType("text");
 
+                    b.Property<int>("RepoId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("AuthorName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -35,10 +38,7 @@ namespace GitInsight.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(48)");
 
-                    b.Property<int>("RepoId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("SHA");
+                    b.HasKey("SHA", "RepoId");
 
                     b.ToTable("Commits");
                 });

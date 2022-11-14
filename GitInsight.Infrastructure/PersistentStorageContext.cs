@@ -30,6 +30,8 @@ public partial class PersistentStorageContext : DbContext
         modelBuilder.Entity<DbRepository>()
             .HasIndex(r => r.FilePath)
             .IsUnique();
+        modelBuilder.Entity<DbCommit>()
+            .HasKey(c => new { c.SHA, c.RepoId });
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

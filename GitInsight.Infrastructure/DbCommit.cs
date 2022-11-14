@@ -3,7 +3,6 @@ namespace GitInsight.Infrastructure;
 public class DbCommit
 {
     [Required]
-    [Key]
     public string SHA {get; set;} = null!;
 
     [Required]
