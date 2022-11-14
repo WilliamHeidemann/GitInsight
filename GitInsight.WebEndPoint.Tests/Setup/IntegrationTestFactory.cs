@@ -1,3 +1,9 @@
+using GitInsight.Infrastructure;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+
 namespace MyApp.Integration.Tests.Setup;
 
 public class IntegrationTestFactory : WebApplicationFactory<Program>, IAsyncLifetime
@@ -6,7 +12,6 @@ public class IntegrationTestFactory : WebApplicationFactory<Program>, IAsyncLife
 
     public IntegrationTestFactory()
     {
-        var test = "123";
         _container = new TestcontainersBuilder<MsSqlTestcontainer>()
             .WithDatabase(new MsSqlTestcontainerConfiguration
             {
@@ -22,10 +27,10 @@ public class IntegrationTestFactory : WebApplicationFactory<Program>, IAsyncLife
     {
         builder.ConfigureTestServices(services =>
         {
-            services.RemoveDbContext<ComicsContext>();
-            services.AddDbContext<ComicsContext>(options => { options.UseSqlServer(_container.ConnectionString); });
-            services.MigrateDbContext<ComicsContext>();
-            services.LoadTestData<ComicsContext>(TestDataGenerator.GenerateTestData);
+            services.RemoveDbContext<PersistentStorageContext>();
+            services.AddDbContext<PersistentStorageContext>(options => { options.UseSqlServer(_container.ConnectionString); });
+            services.MigrateDbContext<PersistentStorageContext>();
+            services.LoadTestData<PersistentStorageContext>(TestDataGenerator.GenerateTestData);
         });
     }
 

@@ -3,13 +3,16 @@
 public class WebEndPointTests
 {
     [Fact]
-    public void Commit_Frequency_Returns_Expected_Output()
+    public void GetEndPointShouldReturnJsonData()
     {
         //Arrange
         
+        
         //Act
         
+        
         //Assert
+        
         
     }
 }
