@@ -22,7 +22,7 @@ public class Program
         var gitCommitTracker = new GitCommitTracker();
         
         var factory = new PersistentStorageContextFactory();
-        using var context = new PersistentStorageContext(); //factory.CreateDbContext(Array.Empty<string>());
+        await using var context = new PersistentStorageContext(); 
         await context.Database.MigrateAsync();
 
         var persistentStorageController = new PersistentStorageController(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
