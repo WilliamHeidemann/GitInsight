@@ -7,8 +7,8 @@ namespace WebEndPoint
     public class Program
     {
 
-        static GitCommitTracker tracker;
-        static PersistentStorageController controller;
+        static GitCommitTracker? tracker;
+        static PersistentStorageController? controller;
 
         public static void Main(string[] args)
         {
