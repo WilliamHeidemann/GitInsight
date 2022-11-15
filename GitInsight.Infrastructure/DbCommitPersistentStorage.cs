@@ -8,7 +8,7 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
         _context = context;
     }
 
-    public (string, Response) Create(DbCommitCreateDTO dbCommitCreate)
+    public async Task<(string, Response)> CreateAsync(DbCommitCreateDTO dbCommitCreate)
     {
         var entity = _context.Commits.FirstOrDefault(c => c.SHA == dbCommitCreate.SHA);
         if(entity is not null) return (entity.SHA, Response.Conflict);
@@ -18,7 +18,7 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
             Date = dbCommitCreate.Date,
             RepoId = dbCommitCreate.RepoId
         });
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
         return (dbCommitCreate.SHA, Response.Created);
     }
 
