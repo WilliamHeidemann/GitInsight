@@ -52,7 +52,7 @@ public class DbCommitPersistentStorageTests : IDisposable
         var dbCommitDTO = new DbCommitCreateDTO("test", "Bob", DateTime.Now, 1);
         
         // Act
-        var (sha, response) = await _dbCommitPersistentStorage.CreateAsync(dbCommitDTO);
+        var (sha, response) = _dbCommitPersistentStorage.Create(dbCommitDTO);
 
         // Assert
         sha.Should().Be(dbCommitDTO.SHA);
@@ -66,7 +66,7 @@ public class DbCommitPersistentStorageTests : IDisposable
         var dbCommitDTO = new DbCommitCreateDTO("created", "SuperDan", DateTime.Now, 0);
         
         // Act
-        var (sha, response) = await _dbCommitPersistentStorage.CreateAsync(dbCommitDTO);
+        var (sha, response) = _dbCommitPersistentStorage.Create(dbCommitDTO);
 
         // Assert
         sha.Should().Be(dbCommitDTO.SHA);
