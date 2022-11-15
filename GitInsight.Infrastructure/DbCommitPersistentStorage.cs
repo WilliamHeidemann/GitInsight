@@ -35,8 +35,13 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
 
     public (IReadOnlyCollection<DbCommitDTO>, Response) FindAllCommitsByRepoId(int repoId)
     {
-        var commits = _context.Commits.Where(c => c.RepoId == repoId).Select(dbCommit =>
-            new DbCommitDTO(dbCommit.SHA, dbCommit.AuthorName, dbCommit.Date)).ToList().AsReadOnly();
+        var commits = _context.Commits
+            .OrderByDescending(dto => dto.Date)
+            .Where(c => c.RepoId == repoId)
+            .Select(dbCommit =>
+            new DbCommitDTO(dbCommit.SHA, dbCommit.AuthorName, dbCommit.Date))
+            .ToList()
+            .AsReadOnly();
         
         return (commits, Response.Found);
     }

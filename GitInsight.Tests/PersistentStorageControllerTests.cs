@@ -122,6 +122,23 @@ public class PersistentStorageControllerTests : IDisposable
         firstCount.Should().Be(secondCount);
     }
 
+    //[InlineData(".", 121)]
+    [InlineData(SingleCommitRepoPath, 1)]
+    [InlineData(TwoCommitRepoPath, 2)]
+    [InlineData(ThreeCommitRepoPath, 3)]
+    [Theory]
+    public async Task FindAllCommitsAsync_Correct_Number_Of_Commits(string filePath, int numCommits)
+    {
+        // Arrange
+
+        // Act
+        var actual = await _persistentStorageController.FindAllCommitsAsync(filePath);
+        var count = _context.Commits.Count();
+
+        // Assert
+        count.Should().Be(numCommits);
+    }
+
     public void Dispose()
     {
         System.IO.Directory.Delete(ExtractPath, true);
