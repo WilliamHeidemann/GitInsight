@@ -1,7 +1,81 @@
 @page "/commitauthor"
-
+@using System.Text.Json
+@using System.Text.Json.Serialization
 <PageTitle>Commit Author</PageTitle>
 
 <h1>Commit Author</h1>
 
 <p>See Commit Author History:</p>
+
+@if (getBranchesError == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Forks</th>
+            <th>Author</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var fork in branches)
+        {
+            <tr>
+                <td>@fork.SHA</td>
+                <td>@fork.Author</td>
+                <td>@fork.Date</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Commit> branches = Array.Empty<Commit>();
+    private bool getBranchesError;
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            "https://localhost:7283/frequency/MadsRoager/MutualExclusion");
+        HttpClientHandler clientHandler = new HttpClientHandler();
+        clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+
+        var client = new HttpClient(clientHandler);
+        
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            branches = await JsonSerializer.DeserializeAsync
+                <IEnumerable<Commit>>(responseStream);
+        }
+        else
+        {
+            getBranchesError = true;
+        }
+
+        shouldRender = true;
+    }
+
+    public class Commit
+    {
+        [JsonPropertyName("sha")]
+        public string? SHA { get; set; }
+        [JsonPropertyName("authorName")]
+        public string? Author { get; set; }
+        [JsonPropertyName("date")]
+        public string Date { get; set; }
+    }
+}
