@@ -25,11 +25,8 @@ public class PersistentStorageControllerTests : IDisposable
         builder.UseSqlite(_connection);
         _context = new PersistentStorageContext(builder.Options);
         _context.Database.EnsureCreated();
-
-        var dbCommitPersistentStorage = new DbCommitPersistentStorage(_context);
-        var dbRepositoryPersistentStorage = new DbRepositoryPersistentStorage(_context);
-
-        _persistentStorageController = new PersistentStorageController(dbCommitPersistentStorage, dbRepositoryPersistentStorage);
+        
+        _persistentStorageController = new PersistentStorageController(_context);
     }
     
     [InlineData(EmptyRepoPath)]
