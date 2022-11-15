@@ -7,6 +7,3 @@ global using DotNet.Testcontainers.Containers;
 
 global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.AspNetCore.TestHost;
-
-
-global using GitInsight.WebEndPoint.Tests.Setup;
