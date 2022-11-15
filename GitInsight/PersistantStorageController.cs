@@ -7,7 +7,7 @@ public class PersistentStorageController
     private readonly ICommitPersistentStorage _dbCommitPersistentStorage;
     private readonly IRepositoryPersistentStorage _dbRepositoryPersistentStorage;
 
-    public PersistentStorageController(DbCommitPersistentStorage dbCommitPersistentStorage, DbRepositoryPersistentStorage dbRepositoryPersistentStorage)
+    public PersistentStorageController(ICommitPersistentStorage dbCommitPersistentStorage, IRepositoryPersistentStorage dbRepositoryPersistentStorage)
     {
         _dbCommitPersistentStorage = dbCommitPersistentStorage;
         _dbRepositoryPersistentStorage = dbRepositoryPersistentStorage;
@@ -53,10 +53,10 @@ public class PersistentStorageController
 
         if(response == Response.NotFound) return Response.NotFound;
 
-        var realRepo = new LibGit2Sharp.Repository(filePath);
+        var realRepo = new Repository(filePath);
 
         realRepo.Commits.ToList().ForEach(c => {
-            _dbCommitPersistentStorage.Create(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, repoDTO!.RepoId));
+             _dbCommitPersistentStorage.Create(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, repoDTO!.RepoId));
         });
         await UpdateRepoNewestSHA(repoDTO!.RepoId, realRepo);
 

@@ -13,12 +13,13 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
         var entity = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == dbRepositoryCreate.Filepath);
         if(entity is not null) return (entity.Id, Response.Conflict);
         if (!LibGit2Sharp.Repository.IsValid(dbRepositoryCreate.Filepath)) return (-1, Response.BadRequest); //-1 because it is not a valid repo
-
-        entity = new DbRepository(dbRepositoryCreate.Filepath);
-        entity.NewestCommitSHA = null; // should be set later
+        entity = new DbRepository(dbRepositoryCreate.Filepath)
+        {
+            NewestCommitSHA = null // should be set later
+        };
 
         _context.Repositories.Add(entity);
-        
+    
         await _context.SaveChangesAsync();
 
         return (entity.Id, Response.Created);

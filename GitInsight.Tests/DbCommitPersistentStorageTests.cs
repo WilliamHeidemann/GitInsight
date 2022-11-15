@@ -46,13 +46,13 @@ public class DbCommitPersistentStorageTests : IDisposable
     }
     
     [Fact]
-    public async Task CreateAsync_Returns_Created_And_Sha() 
+    public void CreateAsync_Returns_Created_And_Sha() 
     {
         // Arrange
         var dbCommitDTO = new DbCommitCreateDTO("test", "Bob", DateTime.Now, 1);
         
         // Act
-        var (sha, response) = _dbCommitPersistentStorage.Create(dbCommitDTO);
+        var (sha, response) =  _dbCommitPersistentStorage.Create(dbCommitDTO);
 
         // Assert
         sha.Should().Be(dbCommitDTO.SHA);
@@ -60,7 +60,7 @@ public class DbCommitPersistentStorageTests : IDisposable
     }
 
     [Fact]
-    public async Task Create_Existing_Returns_Conflict_And_Sha() 
+    public void Create_Existing_Returns_Conflict_And_Sha() 
     {
         // Arrange
         var dbCommitDTO = new DbCommitCreateDTO("created", "SuperDan", DateTime.Now, 0);
@@ -131,7 +131,7 @@ public class DbCommitPersistentStorageTests : IDisposable
         var (commits, response) = _dbCommitPersistentStorage.FindAllCommitsByRepoId(repoId);
 
         // Assert
-        commits.Count().Should().Be(0);
+        commits.Count.Should().Be(0);
         response.Should().Be(Response.Found);
     }
     
