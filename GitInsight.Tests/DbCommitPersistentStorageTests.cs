@@ -52,7 +52,7 @@ public class DbCommitPersistentStorageTests : IDisposable
         var dbCommitDTO = new DbCommitCreateDTO("test", "Bob", DateTime.Now, 1);
         
         // Act
-        var (sha, response) = await _dbCommitPersistentStorage.CreateAsync(dbCommitDTO);
+        var (sha, response) = _dbCommitPersistentStorage.Create(dbCommitDTO);
 
         // Assert
         sha.Should().Be(dbCommitDTO.SHA);
@@ -66,7 +66,7 @@ public class DbCommitPersistentStorageTests : IDisposable
         var dbCommitDTO = new DbCommitCreateDTO("created", "SuperDan", DateTime.Now, 0);
         
         // Act
-        var (sha, response) = await _dbCommitPersistentStorage.CreateAsync(dbCommitDTO);
+        var (sha, response) = _dbCommitPersistentStorage.Create(dbCommitDTO);
 
         // Assert
         sha.Should().Be(dbCommitDTO.SHA);
@@ -104,13 +104,13 @@ public class DbCommitPersistentStorageTests : IDisposable
     [InlineData(0, new[] {"created", "created1", "created2"})]
     [InlineData(2, new[] {"created3"})]
     [Theory]
-    public async Task FindAllCommitsByRepoIdAsync_Given_Repo_Returns_Correct_Commits_And_Found(int repoId, IEnumerable<string> commitSHAs) 
+    public void FindAllCommitsByRepoIdAsync_Given_Repo_Returns_Correct_Commits_And_Found(int repoId, IEnumerable<string> commitSHAs) 
     {
         // Arrange
         
         
         // Act
-        var (commits, response) = await _dbCommitPersistentStorage.FindAllCommitsByRepoIdAsync(repoId);
+        var (commits, response) =  _dbCommitPersistentStorage.FindAllCommitsByRepoId(repoId);
         var commitsAndExpectedSHAs = commits.Zip(commitSHAs);
 
         // Assert
@@ -122,13 +122,13 @@ public class DbCommitPersistentStorageTests : IDisposable
     }
 
     [Fact]
-    public async Task FindAllCommitsByRepoIdAsync_Given_NonExistingRepoId_Returns_No_Commits_And_Found() 
+    public void FindAllCommitsByRepoIdAsync_Given_NonExistingRepoId_Returns_No_Commits_And_Found() 
     {
         // Arrange
         var repoId = 5;
         
         // Act
-        var (commits, response) = await _dbCommitPersistentStorage.FindAllCommitsByRepoIdAsync(repoId);
+        var (commits, response) = _dbCommitPersistentStorage.FindAllCommitsByRepoId(repoId);
 
         // Assert
         commits.Count().Should().Be(0);
