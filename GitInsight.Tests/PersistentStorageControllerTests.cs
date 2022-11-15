@@ -87,12 +87,39 @@ public class PersistentStorageControllerTests : IDisposable
     {
         // Arrange
         _context.Repositories.Add(new DbRepository(filePath));
+        _context.SaveChanges();
         _context.Commits.Count().Should().Be(0);
+        var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == filePath);
+        var realRepo = new LibGit2Sharp.Repository(filePath);
 
         // Act
         var actual = await _persistentStorageController.FindAllCommitsAsync(filePath);
 
         // Assert
+        repo!.NewestCommitSHA.Should().Be(realRepo.Commits.FirstOrDefault()!.Sha);
+        _context.Commits.Count().Should().BeGreaterThan(0);
+    }
+
+    [InlineData(SingleCommitRepoPath)]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]
+    [Theory]
+    public async Task FindAllCommitsAsync_Updates_Repo_With_Missing_Commits(string filePath)
+    {
+        // Arrange
+
+        // Act
+        var actual = await _persistentStorageController.FindAllCommitsAsync(filePath);
+        var firstCount = _context.Commits.Count();
+        var firstSHA = _context.Repositories.FirstOrDefault(r => r.FilePath == filePath)!.NewestCommitSHA;
+
+        var updatedAgain = await _persistentStorageController.FindAllCommitsAsync(filePath);
+        var secondCount = _context.Commits.Count();
+        var secondSHA = _context.Repositories.FirstOrDefault(r => r.FilePath == filePath)!.NewestCommitSHA;
+
+        // Assert
+        firstSHA.Should().Be(secondSHA);
+        firstCount.Should().Be(secondCount);
     }
 
     public void Dispose()

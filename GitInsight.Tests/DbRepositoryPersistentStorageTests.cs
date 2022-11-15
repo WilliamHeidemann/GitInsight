@@ -106,70 +106,6 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         response.Should().Be(Response.NotFound);
         dto.Should().BeNull();
     }
-/*
-    [Fact]
-    public async Task Update_NonExisting_Repository_Returns_NotFound()
-    {
-        // Arrange
-        
-        // Act
-        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(NonexistingFilepath));
-
-        // Assert
-        response.Should().Be(Response.NotFound);
-    }
-
-    [Fact]
-    public async Task Update_Existing_Repository_Returns_Updated()
-    {
-        // Arrange
-        
-        // Act
-        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(EmptyRepoPath));
-
-        // Assert
-        response.Should().Be(Response.Updated);
-    }
-
-    [InlineData(SingleCommitRepoPath)]
-    [InlineData(TwoCommitRepoPath)]
-    [InlineData(ThreeCommitRepoPath)]    
-    [Theory]
-    public async Task Update_UpToDate_Repository_Returns_Updated(string repoPath)
-    {
-        // Arrange
-        await _dbRepositoryPersistentStorage.CreateAsync(new DbRepositoryCreateDTO(repoPath));
-
-        // Act
-        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(repoPath));
-
-        // Assert
-        response.Should().Be(Response.Updated);
-    }
-
-    [InlineData(SingleCommitRepoPath)]
-    [InlineData(TwoCommitRepoPath)]
-    [InlineData(ThreeCommitRepoPath)]
-    [Theory]
-    public async Task Update_Existing_Repository_Returns_Updated2(string repoPath)
-    {
-        // Arrange
-        _context.Repositories.Add(new Infrastructure.DbRepository(repoPath));
-        _context.SaveChanges();
-
-        var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == repoPath);
-        var realRepo = new LibGit2Sharp.Repository(repoPath);
-
-        // Act
-        var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(repoPath));
-
-        // Assert
-        response.Should().Be(Response.Updated);
-
-        repo!.NewestCommitSHA.Should().Be(realRepo.Commits.FirstOrDefault()!.Sha);
-
-    }
- */
 
     [InlineData(SingleCommitRepoPath)]
     [InlineData(TwoCommitRepoPath)]
@@ -182,11 +118,11 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         _context.SaveChanges();
         var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == repoPath);
         var realRepo = new LibGit2Sharp.Repository(repoPath);
-        var realNewestCommitSHA = realRepo.Commits.FirstOrDefault().Sha;
+        var realNewestCommitSHA = realRepo.Commits.FirstOrDefault()!.Sha;
 
     
         // Act
-        await _dbRepositoryPersistentStorage.UpdateNewestCommitSHA(realNewestCommitSHA,repo.Id);
+        await _dbRepositoryPersistentStorage.UpdateNewestCommitSHA(realNewestCommitSHA,repo!.Id);
     
         // Assert
         repo.NewestCommitSHA.Should().Be(realNewestCommitSHA);
