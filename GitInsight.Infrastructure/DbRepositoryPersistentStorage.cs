@@ -3,9 +3,11 @@
 public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
 {
     private PersistentStorageContext _context;
+    private DbCommitPersistentStorage _dbCommitPersistentStorage;
     public DbRepositoryPersistentStorage(PersistentStorageContext context)
     {
         _context = context;
+        _dbCommitPersistentStorage = new DbCommitPersistentStorage(_context);
     }
 
     public async Task<(int, Response)> CreateAsync(DbRepositoryCreateDTO dbRepositoryCreate)
@@ -25,14 +27,9 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
 
         var id = entity.Id;
         
-
-        realRepo.Commits.ToList().ForEach(c => {
-            _context.Commits.Add(new DbCommit {
-                SHA = c.Sha,
-                AuthorName = c.Committer.Name,
-                Date = c.Committer.When.DateTime,
-                RepoId = id
-            });
+        realRepo.Commits.ToList().ForEach(async c => {
+            // should we add them by using the createAsync 
+            await _dbCommitPersistentStorage.CreateAsync(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, id));
         });
 
         await _context.SaveChangesAsync();
@@ -58,16 +55,8 @@ public class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
         var newestCommitSHA = newestCommit is not null ? newestCommit.Sha : null;
         if(newestCommitSHA == repo.NewestCommitSHA) return Response.Updated;
 
-        realRepo.Commits.ToList().ForEach(c => {
-            var commit = _context.Commits.FirstOrDefault(t => t.SHA == c.Sha);
-            if (commit is null) {
-                _context.Commits.Add(new DbCommit {
-                SHA = c.Sha,
-                AuthorName = c.Committer.Name,
-                Date = c.Committer.When.DateTime,
-                RepoId = repo.Id
-            });
-            }
+        realRepo.Commits.ToList().ForEach(async c => {
+            await _dbCommitPersistentStorage.CreateAsync(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, repo.Id));
         });
         _context.SaveChanges();
         repo.NewestCommitSHA = realRepo.Commits.FirstOrDefault()?.Sha;
