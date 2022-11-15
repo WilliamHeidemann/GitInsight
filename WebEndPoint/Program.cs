@@ -42,8 +42,7 @@ namespace WebEndPoint
                     string repositoryName)
                 =>
             {
-                var commits = await controller.FindAllGithubCommits(githubOrganization, repositoryName);
-                return tracker.GetCommitFrequency(commits);
+                return await controller.FindAllGithubCommits(githubOrganization, repositoryName);
             });
 
             app.MapGet("author/{githubOrganization}/{repositoryName}", async (
@@ -51,8 +50,7 @@ namespace WebEndPoint
                     string repositoryName)
                 =>
             {
-                var commits = await controller.FindAllGithubCommits(githubOrganization, repositoryName);
-                return tracker.GetCommitAuthor(commits);
+                return await controller.FindAllGithubCommits(githubOrganization, repositoryName);
             });
 
             app.Run();
