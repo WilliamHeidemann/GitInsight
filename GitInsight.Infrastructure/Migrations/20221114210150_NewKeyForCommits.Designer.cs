@@ -24,7 +24,7 @@ namespace GitInsight.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GitInsight.Infrastructure.DbCommit", b =>
+            modelBuilder.Entity("GitInsight.CLI.Infrastructure.DbCommit", b =>
                 {
                     b.Property<string>("SHA")
                         .HasColumnType("text");
@@ -46,7 +46,7 @@ namespace GitInsight.Infrastructure.Migrations
                     b.ToTable("Commits");
                 });
 
-            modelBuilder.Entity("GitInsight.Infrastructure.DbRepository", b =>
+            modelBuilder.Entity("GitInsight.CLI.Infrastructure.DbRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

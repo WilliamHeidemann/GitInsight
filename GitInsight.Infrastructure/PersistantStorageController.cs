@@ -15,7 +15,7 @@ public class PersistentStorageController
 
     public async Task<IEnumerable<DbCommitDTO>> FindAllCommitsAsync(string filePath)
     {     
-        if(!LibGit2Sharp.Repository.IsValid(filePath)) throw new RepositoryNotFoundException("The Repository does not exist. Please provide a valid filepath.");
+        if(!Repository.IsValid(filePath)) throw new RepositoryNotFoundException("The Repository does not exist. Please provide a valid filepath.");
         var (id, response) = await CreateRepoWithCommits(filePath);
         if(response == Response.Conflict) await UpdateRepoWithNewCommits(filePath);
         var (commits, findResponse) = _dbCommitPersistentStorage.FindAllCommitsByRepoId(id);
@@ -25,11 +25,11 @@ public class PersistentStorageController
     public async Task<IEnumerable<DbCommitDTO>> FindAllGithubCommits(string organizationName, string repositoryName) {
         var clonedRepoPath = $"../../Source/{organizationName}-{repositoryName}";
         var remoteRepository = $"https://github.com/{organizationName}/{repositoryName}";
-        if (LibGit2Sharp.Repository.IsValid(clonedRepoPath)) {
-            var repo = new LibGit2Sharp.Repository(clonedRepoPath);
+        if (Repository.IsValid(clonedRepoPath)) {
+            var repo = new Repository(clonedRepoPath);
             repo.Network.Fetch("origin", new List<string>(){"main"});
         } else {
-            LibGit2Sharp.Repository.Clone(remoteRepository, clonedRepoPath);
+            Repository.Clone(remoteRepository, clonedRepoPath);
         }
         
         return await FindAllCommitsAsync(clonedRepoPath);
@@ -39,7 +39,7 @@ public class PersistentStorageController
     {
         var (id, response) = await _dbRepositoryPersistentStorage.CreateAsync(new DbRepositoryCreateDTO(filePath));
         if (response == Response.Conflict) return (id, Response.Conflict);
-        var realRepo = new LibGit2Sharp.Repository(filePath);
+        var realRepo = new Repository(filePath);
 
         realRepo.Commits.ToList().ForEach(c =>
         {

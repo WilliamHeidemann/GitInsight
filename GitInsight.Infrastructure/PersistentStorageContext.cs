@@ -17,7 +17,7 @@ public partial class PersistentStorageContext : DbContext
         {
             var configuration = new ConfigurationBuilder().AddUserSecrets<PersistentStorageContext>()
                 .Build();
-            var connectionString = configuration.GetConnectionString("GitInsight");
+            var connectionString = configuration.GetConnectionString("GitInsight.CLI");
             optionsBuilder.UseNpgsql(connectionString);
         }
     }
