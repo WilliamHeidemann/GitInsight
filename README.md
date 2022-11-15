@@ -1,5 +1,12 @@
 # GitInsight
 
+
+## To launch GitInsight:
+
+- Open a terminal.
+- Type ```dotnet run --project GitInsight --repo-path="[Insert the path to the repo here]"```
+- (Optional) Use the ```--author-mode``` flag after the repo-path to run it in author-mode.
+
 ## Setting up GitInsight
 
 To setup the connection to the database:
@@ -38,10 +45,3 @@ From commandLine:
 8. take a look a docker to see the id of the container running i.e the $containerId
     
     docker ps
-
-To launch GitInsight:
-
-- Open a terminal.
-- Type ```dotnet run --project GitInsight --repo-path="[Insert the path to the repo here]"```
-- (Optional) Use the ```--author-mode``` flag after the repo-path to run it in author-mode.
-
