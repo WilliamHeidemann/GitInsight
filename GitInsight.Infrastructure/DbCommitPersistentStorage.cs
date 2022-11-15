@@ -1,6 +1,7 @@
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("GitInsight.Infrastructure.Tests")]
 namespace GitInsight.Infrastructure;
-
-public class DbCommitPersistentStorage : ICommitPersistentStorage
+internal class DbCommitPersistentStorage : ICommitPersistentStorage
 {
     private PersistentStorageContext _context;
     public DbCommitPersistentStorage(PersistentStorageContext context)
@@ -8,9 +9,9 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
         _context = context;
     }
 
-    public async Task<(string, Response)> CreateAsync(DbCommitCreateDTO dbCommitCreate)
+    public (string, Response) Create(DbCommitCreateDTO dbCommitCreate)
     {
-        var entity = await _context.Commits.FirstOrDefaultAsync(c => c.SHA == dbCommitCreate.SHA);
+        var entity = _context.Commits.FirstOrDefault(c => c.SHA == dbCommitCreate.SHA && c.RepoId == dbCommitCreate.RepoId);
         if(entity is not null) return (entity.SHA, Response.Conflict);
         _context.Commits.Add(new DbCommit {
             SHA = dbCommitCreate.SHA,
@@ -18,7 +19,7 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
             Date = dbCommitCreate.Date,
             RepoId = dbCommitCreate.RepoId
         });
-        await _context.SaveChangesAsync();
+        _context.SaveChanges();
         return (dbCommitCreate.SHA, Response.Created);
     }
 
@@ -33,11 +34,16 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
         return Response.NoContent;
     }
 
-    public async Task<(IReadOnlyCollection<DbCommitDTO>, Response)> FindAllCommitsByRepoIdAsync(int repoId)
+    public (IReadOnlyCollection<DbCommitDTO>, Response) FindAllCommitsByRepoId(int repoId)
     {
-        IReadOnlyCollection<DbCommitDTO> commits = new List<DbCommitDTO>();
-        await _context.Commits.Where(c => c.RepoId == repoId).ForEachAsync(c => commits.Append(new DbCommitDTO(c.SHA, c.AuthorName, c.Date)));
-
+        var commits = _context.Commits
+            .OrderByDescending(dto => dto.Date)
+            .Where(c => c.RepoId == repoId)
+            .Select(dbCommit =>
+            new DbCommitDTO(dbCommit.SHA, dbCommit.AuthorName, dbCommit.Date))
+            .ToList()
+            .AsReadOnly();
+        
         return (commits, Response.Found);
     }
 

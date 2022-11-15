@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>8b0c4128-cc76-466b-aeda-64b661901a6e</UserSecretsId>
+    <RootNamespace>GitInsight</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

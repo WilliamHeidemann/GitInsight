@@ -1,11 +1,20 @@
+using Azure.Core;
 using GitInsight;
+using GitInsight.Infrastructure;
 
 namespace WebEndPoint
 {
     public class Program
     {
+
+        static GitCommitTracker? tracker;
+        static PersistentStorageController? controller;
+
         public static void Main(string[] args)
         {
+            tracker = new GitCommitTracker();
+            using var context = new PersistentStorageContext();
+            controller = new PersistentStorageController(context);
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -30,24 +39,18 @@ namespace WebEndPoint
 
             app.MapGet("frequency/{githubOrganization}/{repositoryName}", async (
                     string githubOrganization,
-                    string repositoryName,
-                    GitCommitTracker tracker,
-                    PersistentStorageController controller)
+                    string repositoryName)
                 =>
             {
-                var commits = await controller.FindAllCommitsAsync(repositoryName);
-                return tracker.GetCommitFrequency(commits);
+                return await controller.FindAllGithubCommits(githubOrganization, repositoryName);
             });
 
             app.MapGet("author/{githubOrganization}/{repositoryName}", async (
                     string githubOrganization,
-                    string repositoryName,
-                    GitCommitTracker tracker,
-                    PersistentStorageController controller)
+                    string repositoryName)
                 =>
             {
-                var commits = await controller.FindAllCommitsAsync(repositoryName);
-                return tracker.GetCommitAuthor(commits);
+                return await controller.FindAllGithubCommits(githubOrganization, repositoryName);
             });
 
             app.Run();
