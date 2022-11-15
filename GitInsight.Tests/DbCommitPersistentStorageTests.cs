@@ -101,7 +101,7 @@ public class DbCommitPersistentStorageTests : IDisposable
         response.Should().Be(Response.NotFound);
     }
 
-    [InlineData(0, new[] {"created", "created1", "created2"})]
+    [InlineData(0, new[] {"created2", "created1", "created"})]
     [InlineData(2, new[] {"created3"})]
     [Theory]
     public void FindAllCommitsByRepoIdAsync_Given_Repo_Returns_Correct_Commits_And_Found(int repoId, IEnumerable<string> commitSHAs) 

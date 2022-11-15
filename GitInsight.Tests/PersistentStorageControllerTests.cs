@@ -122,6 +122,7 @@ public class PersistentStorageControllerTests : IDisposable
         firstCount.Should().Be(secondCount);
     }
 
+    //[InlineData(".", 121)]
     [InlineData(SingleCommitRepoPath, 1)]
     [InlineData(TwoCommitRepoPath, 2)]
     [InlineData(ThreeCommitRepoPath, 3)]
