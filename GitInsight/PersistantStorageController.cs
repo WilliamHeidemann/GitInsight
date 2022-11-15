@@ -21,4 +21,10 @@ public class PersistentStorageController
         var (commits, findResponse) = await _dbCommitPersistentStorage.FindAllCommitsByRepoIdAsync(id);
         return commits; 
     }
+
+    public async Task<IEnumerable<DbCommitDTO>> FindAllGithubCommits(string organizationName, string repositoryName) {
+        var temppath = $"../../Source/{organizationName}-{repositoryName}";
+        var repoPath = LibGit2Sharp.Repository.Clone($"https://github.com/{organizationName}/{repositoryName}", temppath);
+        return await FindAllCommitsAsync(temppath);
+    }
 }

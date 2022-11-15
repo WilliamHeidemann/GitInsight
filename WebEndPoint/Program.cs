@@ -43,7 +43,7 @@ namespace WebEndPoint
                     string repositoryName)
                 =>
             {
-                var commits = await controller.FindAllCommitsAsync($"https://github.com/{githubOrganization}/{repositoryName}");
+                var commits = await controller.FindAllGithubCommits(githubOrganization, repositoryName);
                 return tracker.GetCommitFrequency(commits);
             });
 
@@ -52,7 +52,7 @@ namespace WebEndPoint
                     string repositoryName)
                 =>
             {
-                var commits = await controller.FindAllCommitsAsync($"https://github.com/{githubOrganization}/{repositoryName}");
+                var commits = await controller.FindAllGithubCommits(githubOrganization, repositoryName);
                 return tracker.GetCommitAuthor(commits);
             });
 
