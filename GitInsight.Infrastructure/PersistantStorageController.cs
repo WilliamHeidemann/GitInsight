@@ -22,6 +22,43 @@ public class PersistentStorageController
         return commits; 
     }
 
+    public async Task<IEnumerable<CommitCountDTO>> GetFrequencyMode(string filePath) {
+        var commits = await getCommits(filePath);
+
+        return GroupCommitsByDate(commits);
+    }
+
+    public async Task<IEnumerable<AuthorCommitDTO>> GetAuthorMode(string filePath) {
+        var commits = await getCommits(filePath);
+
+        return GroupByAuthors(commits);
+    }
+
+    private IEnumerable<AuthorCommitDTO> GroupByAuthors(IEnumerable<DbCommitDTO> commits) {
+        foreach (var authorcommits in commits
+                     .GroupBy(commit => commit.AuthorName)
+                     .Distinct())
+        {
+            yield return new(GroupCommitsByDate(authorcommits), authorcommits.First().AuthorName);
+        }
+    }
+
+    private async Task<IReadOnlyCollection<DbCommitDTO>> getCommits(string filePath) {
+        if(!Repository.IsValid(filePath)) throw new RepositoryNotFoundException("The Repository does not exist. Please provide a valid filepath.");
+        var (id, response) = await CreateRepoWithCommits(filePath);
+        if(response == Response.Conflict) await UpdateRepoWithNewCommits(filePath);
+        var (commits, findResponse) = _dbCommitPersistentStorage.FindAllCommitsByRepoId(id);
+        return commits;
+    }
+
+    private IEnumerable<CommitCountDTO> GroupCommitsByDate(IEnumerable<DbCommitDTO> commits) {
+        return from commit in commits
+            .GroupBy(commit => commit.Date.Date)
+            let count = commit.Count()
+            let date = commit.First().Date
+            select new CommitCountDTO(count, date);
+    }
+
     public async Task<IEnumerable<DbCommitDTO>> FindAllGithubCommits(string organizationName, string repositoryName) {
         var clonedRepoPath = $"../../Source/{organizationName}-{repositoryName}";
         var remoteRepository = $"https://github.com/{organizationName}/{repositoryName}";
