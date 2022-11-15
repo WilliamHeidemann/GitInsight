@@ -10,7 +10,7 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
 
     public (string, Response) Create(DbCommitCreateDTO dbCommitCreate)
     {
-        var entity = _context.Commits.FirstOrDefault(c => c.SHA == dbCommitCreate.SHA);
+        var entity = _context.Commits.FirstOrDefault(c => c.SHA == dbCommitCreate.SHA && c.RepoId == dbCommitCreate.RepoId);
         if(entity is not null) return (entity.SHA, Response.Conflict);
         _context.Commits.Add(new DbCommit {
             SHA = dbCommitCreate.SHA,
