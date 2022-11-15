@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebEndPoint", "WebEndPoint\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{CB58DB42-E1AF-430C-B34B-388789AD9184}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitInsight.WebEndPoint.Tests", "GitInsight.WebEndPoint.Tests\GitInsight.WebEndPoint.Tests.csproj", "{1505AB0A-30E1-45BA-BB18-FD5FD8AF6333}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{CB58DB42-E1AF-430C-B34B-388789AD9184}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB58DB42-E1AF-430C-B34B-388789AD9184}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB58DB42-E1AF-430C-B34B-388789AD9184}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1505AB0A-30E1-45BA-BB18-FD5FD8AF6333}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1505AB0A-30E1-45BA-BB18-FD5FD8AF6333}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1505AB0A-30E1-45BA-BB18-FD5FD8AF6333}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1505AB0A-30E1-45BA-BB18-FD5FD8AF6333}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

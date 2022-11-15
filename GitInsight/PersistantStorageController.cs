@@ -22,6 +22,19 @@ public class PersistentStorageController
         return commits; 
     }
 
+    public async Task<IEnumerable<DbCommitDTO>> FindAllGithubCommits(string organizationName, string repositoryName) {
+        var clonedRepoPath = $"../../Source/{organizationName}-{repositoryName}";
+        var remoteRepository = $"https://github.com/{organizationName}/{repositoryName}";
+        if (LibGit2Sharp.Repository.IsValid(clonedRepoPath)) {
+            var repo = new LibGit2Sharp.Repository(clonedRepoPath);
+            repo.Network.Fetch("origin", new List<string>(){"main"});
+        } else {
+            LibGit2Sharp.Repository.Clone(remoteRepository, clonedRepoPath);
+        }
+        
+        return await FindAllCommitsAsync(clonedRepoPath);
+    }
+
     private async Task<(int, Response)> CreateRepoWithCommits(string filePath)
     {
         var (id, response) = await _dbRepositoryPersistentStorage.CreateAsync(new DbRepositoryCreateDTO(filePath));
@@ -63,6 +76,4 @@ public class PersistentStorageController
         return Response.Updated;
 
     }
-
-
 }
