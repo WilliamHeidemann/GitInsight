@@ -18,7 +18,7 @@ public class PersistentStorageController
         if(!LibGit2Sharp.Repository.IsValid(filePath)) throw new RepositoryNotFoundException("The Repository does not exist. Please provide a valid filepath.");
         var (id, response) = await CreateRepoWithCommits(filePath);
         if(response == Response.Conflict) await UpdateRepoWithNewCommits(filePath);
-        var (commits, findResponse) = await _dbCommitPersistentStorage.FindAllCommitsByRepoIdAsync(id);
+        var (commits, findResponse) = _dbCommitPersistentStorage.FindAllCommitsByRepoId(id);
         return commits; 
     }
 
@@ -31,7 +31,7 @@ public class PersistentStorageController
         realRepo.Commits.ToList().ForEach(async c =>
         {
             // should we add them by using the createAsync 
-            await _dbCommitPersistentStorage.CreateAsync(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, id));
+            _dbCommitPersistentStorage.Create(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, id));
         });
         await UpdateRepoNewestSHA(id, realRepo);
 
@@ -55,8 +55,8 @@ public class PersistentStorageController
 
         var realRepo = new LibGit2Sharp.Repository(filePath);
 
-        realRepo.Commits.ToList().ForEach(async c => {
-            await _dbCommitPersistentStorage.CreateAsync(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, repoDTO!.RepoId));
+        realRepo.Commits.ToList().ForEach(c => {
+             _dbCommitPersistentStorage.Create(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, repoDTO!.RepoId));
         });
         await UpdateRepoNewestSHA(repoDTO!.RepoId, realRepo);
 
