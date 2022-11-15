@@ -31,7 +31,7 @@ public class DbRepositoryPersistentStorageTests : IDisposable
 
         _dbRepositoryPersistentStorage = new DbRepositoryPersistentStorage(_context);
 
-        _context.Repositories.Add(new DbRepository(EmptyRepoPath));
+        _context.Repositories.Add(new Infrastructure.DbRepository(EmptyRepoPath));
         _context.SaveChanges();
     }
 
@@ -154,11 +154,11 @@ public class DbRepositoryPersistentStorageTests : IDisposable
     public async Task Update_Existing_Repository_Returns_Updated2(string repoPath)
     {
         // Arrange
-        _context.Repositories.Add(new DbRepository(repoPath));
+        _context.Repositories.Add(new Infrastructure.DbRepository(repoPath));
         _context.SaveChanges();
 
         var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == repoPath);
-        var realRepo = new Repository(repoPath);
+        var realRepo = new LibGit2Sharp.Repository(repoPath);
 
         // Act
         var response = await _dbRepositoryPersistentStorage.UpdateAsync(new DbRepositoryUpdateDTO(repoPath));

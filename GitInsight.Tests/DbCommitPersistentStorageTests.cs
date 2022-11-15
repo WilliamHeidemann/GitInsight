@@ -81,7 +81,7 @@ public class DbCommitPersistentStorageTests : IDisposable
         
         // Act
         var response = await _dbCommitPersistentStorage.DeleteAsync(deleteSha);
-        var actual = await _context.Commits.FindAsync(deleteSha);
+        var actual = await _context.Commits.FindAsync(deleteSha, 0);
 
         // Assert
         response.Should().Be(Response.NoContent);
