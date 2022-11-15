@@ -1,12 +1,21 @@
 using Azure.Core;
 using GitInsight;
+using GitInsight.Infrastructure;
 
 namespace WebEndPoint
 {
     public class Program
     {
+
+        static GitCommitTracker tracker;
+        static PersistentStorageController controller;
+
         public static void Main(string[] args)
         {
+            tracker = new();
+            var factory = new PersistentStorageContextFactory();
+            using var context = factory.CreateDbContext(Array.Empty<string>());
+            controller = new(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -31,23 +40,19 @@ namespace WebEndPoint
 
             app.MapGet("frequency/{githubOrganization}/{repositoryName}", async (
                     string githubOrganization,
-                    string repositoryName,
-                    GitCommitTracker tracker,
-                    PersistentStorageController controller)
+                    string repositoryName)
                 =>
             {
-                var commits = await controller.FindAllCommitsAsync(githubOrganization + "/" + repositoryName);
+                var commits = await controller.FindAllCommitsAsync($"https://github.com/{githubOrganization}/{repositoryName}");
                 return tracker.GetCommitFrequency(commits);
             });
 
             app.MapGet("author/{githubOrganization}/{repositoryName}", async (
                     string githubOrganization,
-                    string repositoryName,
-                    GitCommitTracker tracker,
-                    PersistentStorageController controller)
+                    string repositoryName)
                 =>
             {
-                var commits = await controller.FindAllCommitsAsync(repositoryName);
+                var commits = await controller.FindAllCommitsAsync($"https://github.com/{githubOrganization}/{repositoryName}");
                 return tracker.GetCommitAuthor(commits);
             });
 
