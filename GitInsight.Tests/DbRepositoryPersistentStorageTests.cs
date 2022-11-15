@@ -106,7 +106,7 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         response.Should().Be(Response.NotFound);
         dto.Should().BeNull();
     }
-
+/*
     [Fact]
     public async Task Update_NonExisting_Repository_Returns_NotFound()
     {
@@ -169,6 +169,28 @@ public class DbRepositoryPersistentStorageTests : IDisposable
         repo!.NewestCommitSHA.Should().Be(realRepo.Commits.FirstOrDefault()!.Sha);
 
     }
+ */
+
+    [InlineData(SingleCommitRepoPath)]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]
+    [Theory]
+    public async Task Updating_NewestSHA_updates_newest_sha_in_DB(string repoPath)
+    {
+        // Arrange
+        _context.Repositories.Add(new Infrastructure.DbRepository(repoPath));
+        _context.SaveChanges();
+        var repo = _context.Repositories.FirstOrDefault(r => r.FilePath == repoPath);
+        var realRepo = new LibGit2Sharp.Repository(repoPath);
+        var realNewestCommitSHA = realRepo.Commits.FirstOrDefault().Sha;
+
+    
+        // Act
+        await _dbRepositoryPersistentStorage.UpdateNewestCommitSHA(realNewestCommitSHA,repo.Id);
+    
+        // Assert
+        repo.NewestCommitSHA.Should().Be(realNewestCommitSHA);
+    }   
 
     public void Dispose()
     {

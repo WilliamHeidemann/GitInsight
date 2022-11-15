@@ -1,5 +1,7 @@
 namespace GitInsight.Infrastructure;
 
+// should update newest commit
+
 public class DbCommitPersistentStorage : ICommitPersistentStorage
 {
     private PersistentStorageContext _context;

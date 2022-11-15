@@ -79,6 +79,22 @@ public class PersistentStorageControllerTests : IDisposable
         actual.Should().BeEquivalentTo(expected, options => options.WithStrictOrdering());
     }
 
+    [InlineData(SingleCommitRepoPath)]
+    [InlineData(TwoCommitRepoPath)]
+    [InlineData(ThreeCommitRepoPath)]
+    [Theory]
+    public async Task FindAllCommitsAsync_Updates_Existing_Repo(string filePath)
+    {
+        // Arrange
+        _context.Repositories.Add(new DbRepository(filePath));
+        _context.Commits.Count().Should().Be(0);
+
+        // Act
+        var actual = await _persistentStorageController.FindAllCommitsAsync(filePath);
+
+        // Assert
+    }
+
     public void Dispose()
     {
         System.IO.Directory.Delete(ExtractPath, true);
