@@ -1,4 +1,5 @@
 using GitInsight.Core;
+using GitInsight.Infrastructure;
 
 namespace GitInsight;
 
@@ -7,10 +8,10 @@ public class PersistentStorageController
     private readonly ICommitPersistentStorage _dbCommitPersistentStorage;
     private readonly IRepositoryPersistentStorage _dbRepositoryPersistentStorage;
 
-    public PersistentStorageController(ICommitPersistentStorage dbCommitPersistentStorage, IRepositoryPersistentStorage dbRepositoryPersistentStorage)
+    public PersistentStorageController(PersistentStorageContext context)
     {
-        _dbCommitPersistentStorage = dbCommitPersistentStorage;
-        _dbRepositoryPersistentStorage = dbRepositoryPersistentStorage;
+        _dbCommitPersistentStorage = new DbCommitPersistentStorage(context);
+        _dbRepositoryPersistentStorage = new DbRepositoryPersistentStorage(context);
     }
 
     public async Task<IEnumerable<DbCommitDTO>> FindAllCommitsAsync(string filePath)
