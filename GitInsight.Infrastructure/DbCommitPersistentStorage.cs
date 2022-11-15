@@ -1,6 +1,7 @@
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("GitInsight.Infrastructure.Tests")]
 namespace GitInsight.Infrastructure;
-
-public class DbCommitPersistentStorage : ICommitPersistentStorage
+internal class DbCommitPersistentStorage : ICommitPersistentStorage
 {
     private PersistentStorageContext _context;
     public DbCommitPersistentStorage(PersistentStorageContext context)
