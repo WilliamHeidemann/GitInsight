@@ -13,8 +13,7 @@ namespace WebEndPoint
         public static void Main(string[] args)
         {
             tracker = new();
-            var factory = new PersistentStorageContextFactory();
-            using var context = factory.CreateDbContext(Array.Empty<string>());
+            using var context = new PersistentStorageContext();
             controller = new(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
             var builder = WebApplication.CreateBuilder(args);
 
