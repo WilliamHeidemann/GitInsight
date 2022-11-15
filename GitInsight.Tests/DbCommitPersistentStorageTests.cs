@@ -131,7 +131,7 @@ public class DbCommitPersistentStorageTests : IDisposable
         var (commits, response) = _dbCommitPersistentStorage.FindAllCommitsByRepoId(repoId);
 
         // Assert
-        commits.Count().Should().Be(0);
+        commits.Count.Should().Be(0);
         response.Should().Be(Response.Found);
     }
     
