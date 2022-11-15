@@ -37,9 +37,9 @@ public class DbCommitPersistentStorage : ICommitPersistentStorage
 
     public async Task<(IReadOnlyCollection<DbCommitDTO>, Response)> FindAllCommitsByRepoIdAsync(int repoId)
     {
-        IReadOnlyCollection<DbCommitDTO> commits = new List<DbCommitDTO>();
-        await _context.Commits.Where(c => c.RepoId == repoId).ForEachAsync(c => commits.Append(new DbCommitDTO(c.SHA, c.AuthorName, c.Date)));
-
+        var commits = _context.Commits.Where(c => c.RepoId == repoId).Select(dbCommit =>
+            new DbCommitDTO(dbCommit.SHA, dbCommit.AuthorName, dbCommit.Date)).ToList().AsReadOnly();
+        
         return (commits, Response.Found);
     }
 
