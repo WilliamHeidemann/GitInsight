@@ -28,7 +28,7 @@ public class PersistentStorageController
         if (response == Response.Conflict) return (id, Response.Conflict);
         var realRepo = new LibGit2Sharp.Repository(filePath);
 
-        realRepo.Commits.ToList().ForEach(async c =>
+        realRepo.Commits.ToList().ForEach(c =>
         {
             // should we add them by using the createAsync 
             _dbCommitPersistentStorage.Create(new DbCommitCreateDTO(c.Sha, c.Committer.Name, c.Committer.When.DateTime, id));
