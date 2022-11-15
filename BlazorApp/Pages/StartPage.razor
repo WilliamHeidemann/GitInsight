@@ -1,0 +1,29 @@
+﻿@page "/"
+@using Microsoft.Extensions.Logging
+@inject ILogger<StartPage> Logger
+
+<PageTitle>GitInsight</PageTitle>
+
+<h1>Start Page</h1>
+
+<p>Please provide a link to the GitHub repository you want to analyze: </p>
+
+<EditForm Model="@model" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="repopath" @bind-Value="model.RepoPath" />
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    private StartPageModel model = new();
+
+    private void HandleValidSubmit()
+    {
+        Logger.LogInformation("HandleValidSubmit called");
+
+        // Process the valid form
+    }
+}

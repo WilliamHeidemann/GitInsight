@@ -1,0 +1,45 @@
+﻿@page "/forks"
+
+<PageTitle>Forks</PageTitle>
+
+@using BlazorApp.Data
+@inject ForksList ForksList
+
+<h1>Forks</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (forkList == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Forks</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var fork in forkList)
+        {
+            <tr>
+                <td>@fork.Identifier</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Fork[]? forkList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forkList = await ForksList.GetForksAsync();
+    }
+
+}
