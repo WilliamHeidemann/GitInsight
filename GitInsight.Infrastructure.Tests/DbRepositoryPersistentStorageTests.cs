@@ -1,5 +1,5 @@
 ﻿
-namespace GitInsight.Tests;
+namespace GitInsight.Infrastructure.Tests;
 
 public class DbRepositoryPersistentStorageTests : IDisposable
 {
