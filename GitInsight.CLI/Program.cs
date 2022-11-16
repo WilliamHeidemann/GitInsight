@@ -2,6 +2,7 @@
 using CommandLine;
 using GitInsight;
 using GitInsight.Core;
+using Microsoft.Extensions.Configuration;
 using System.IO.Compression;
 
 public class Program
