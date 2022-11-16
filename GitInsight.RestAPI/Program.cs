@@ -1,8 +1,8 @@
 using Azure.Core;
-using GitInsight;
+using GitInsight.CLI;
 using GitInsight.Infrastructure;
 
-namespace WebEndPoint
+namespace GitInsight.RestAPI
 {
     public class Program
     {

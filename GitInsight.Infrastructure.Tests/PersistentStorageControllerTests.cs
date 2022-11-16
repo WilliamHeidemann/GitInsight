@@ -1,4 +1,4 @@
-namespace GitInsight.Tests;
+namespace GitInsight.Infrastructure.Tests;
 
 public class PersistentStorageControllerTests : IDisposable
 {

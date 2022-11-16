@@ -1,9 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿namespace GitInsight.CLI;
+// See https://aka.ms/new-console-template for more information
 using CommandLine;
 using GitInsight;
 using GitInsight.Core;
-using Microsoft.Extensions.Configuration;
-using System.IO.Compression;
 
 public class Program
 {
