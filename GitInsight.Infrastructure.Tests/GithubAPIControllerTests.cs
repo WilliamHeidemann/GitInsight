@@ -7,7 +7,7 @@ public class GithubAPIControllerTests {
     private readonly GithubAPIController _githubAPIController;
 
     public GithubAPIControllerTests() {
-        _githubAPIController = new GithubAPIController(new ConfigurationBuilder().AddUserSecrets<GithubAPIController>().Build());
+        _githubAPIController = new GithubAPIController();
     }
 
     [Fact]
