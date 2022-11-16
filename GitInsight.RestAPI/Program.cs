@@ -9,7 +9,7 @@ namespace GitInsight.RestAPI
 
         static GitCommitTracker? tracker;
         static PersistentStorageController? controller;
-        static GithubAPIController githubAPIController;
+        static GithubAPIController? githubAPIController;
 
         public static void Main(string[] args)
         {
