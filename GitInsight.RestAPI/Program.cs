@@ -9,12 +9,14 @@ namespace GitInsight.RestAPI
 
         static GitCommitTracker? tracker;
         static PersistentStorageController? controller;
+        static GithubAPIController githubAPIController;
 
         public static void Main(string[] args)
         {
             tracker = new GitCommitTracker();
             using var context = new PersistentStorageContext();
             controller = new PersistentStorageController(context);
+            githubAPIController = new GithubAPIController();
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -51,6 +53,14 @@ namespace GitInsight.RestAPI
                 =>
             {
                 return await controller.FindAllGithubCommits(githubOrganization, repositoryName);
+            });
+
+            app.MapGet("forks/{githubOrganization}/{repositoryName}", async (
+                    string githubOrganization,
+                    string repositoryName)
+                =>
+            {
+                return await githubAPIController.GetForkList(githubOrganization, repositoryName);
             });
 
             app.Run();

@@ -5,14 +5,13 @@ namespace GitInsight.Infrastructure;
 
 public class GithubAPIController {
 
-    private readonly IConfiguration _config;
     private readonly HttpClient _client;
 
-    public GithubAPIController(IConfiguration config) {
-        _config = config;
+    public GithubAPIController() {
+        var config = new ConfigurationBuilder().AddUserSecrets<GithubAPIController>().Build();
         _client = new HttpClient();
         _client.BaseAddress = new Uri("https://api.github.com");
-        var token = _config["AuthenticationTokens:GitHubAPI"];
+        var token = config["AuthenticationTokens:GitHubAPI"];
 
         _client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("AppName", "1.0"));
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", token);
