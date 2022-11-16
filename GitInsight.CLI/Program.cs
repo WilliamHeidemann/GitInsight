@@ -25,7 +25,7 @@ public class Program
         await using var context = new PersistentStorageContext(); 
         await context.Database.MigrateAsync();
 
-        var persistentStorageController = new PersistentStorageController(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
+        var persistentStorageController = new PersistentStorageController(context);
         
         IEnumerable<DbCommitDTO> commitsToAnalyze;
         try 

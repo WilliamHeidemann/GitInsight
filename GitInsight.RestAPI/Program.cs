@@ -12,9 +12,9 @@ namespace WebEndPoint
 
         public static void Main(string[] args)
         {
-            tracker = new();
+            tracker = new GitCommitTracker();
             using var context = new PersistentStorageContext();
-            controller = new(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
+            controller = new PersistentStorageController(context);
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
