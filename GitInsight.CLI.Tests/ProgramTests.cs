@@ -1,10 +1,10 @@
 using System.Reflection;
 
-namespace GitInsight.Tests;
+namespace GitInsight.CLI.Tests;
 public class ProgramTests {
-    /*
+
     [Fact]
-    public async Task MainReturnsCorrectOutputForFrequencyModeInTestRepo() 
+    public void MainReturnsCorrectOutputForFrequencyModeInTestRepo()
     {
         // Arrange
         using var writer = new StringWriter();
@@ -12,13 +12,12 @@ public class ProgramTests {
         Console.SetIn(reader);
         Console.SetOut(writer);
 
-        var outputFile = File.OpenText("../../../ExpectedOutput.txt").ReadToEnd().TrimEnd();
-         // Act
+        var outputFile = File.OpenText("../../../files/ExpectedOutput.txt").ReadToEnd().TrimEnd();
+        // Act
         var program = Assembly.Load(nameof(GitInsight.CLI));
         program.EntryPoint?.Invoke(null, new[] { Array.Empty<string>() });
         // Assert
         var output = writer.GetStringBuilder().ToString().TrimEnd();
         output.Should().Be(outputFile);
     }
-    */
 }

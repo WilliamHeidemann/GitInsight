@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitInsight.CLI", "GitInsight.CLI\GitInsight.CLI.csproj", "{92174619-3206-4AE3-85AF-A0B94EE85868}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitInsight.Tests", "GitInsight.Tests\GitInsight.Tests.csproj", "{A9C8DBCC-3D7E-4B6F-B413-0B07279C8F87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitInsight.CLI.Tests", "GitInsight.CLI.Tests\GitInsight.CLI.Tests.csproj", "{A9C8DBCC-3D7E-4B6F-B413-0B07279C8F87}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitInsight.Core", "GitInsight.Core\GitInsight.Core.csproj", "{8C72BF52-FF5F-4874-B149-8F2354412AE5}"
 EndProject
