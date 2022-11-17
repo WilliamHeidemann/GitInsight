@@ -1,7 +1,9 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿namespace GitInsight.CLI;
+// See https://aka.ms/new-console-template for more information
 using CommandLine;
 using GitInsight;
 using GitInsight.Core;
+using System.Globalization;
 using System.IO.Compression;
 
 public class Program
@@ -24,29 +26,51 @@ public class Program
         await using var context = new PersistentStorageContext(); 
         await context.Database.MigrateAsync();
 
-        var persistentStorageController = new PersistentStorageController(new DbCommitPersistentStorage(context), new DbRepositoryPersistentStorage(context));
-        
-        IEnumerable<DbCommitDTO> commitsToAnalyze;
-        try 
-        {
-            commitsToAnalyze = await persistentStorageController.FindAllCommitsAsync(input.Value.RepoPath);
-        } 
-        catch (RepositoryNotFoundException e)
-        {
-            Console.WriteLine(e.Message);
-            return;
-        }
+        var persistentStorageController = new PersistentStorageController(context);
          
         if (input.Value.AuthorMode)
         {
-            Console.WriteLine("-------AUTHOR COMMITS-------");
-            gitCommitTracker.GetCommitAuthor(commitsToAnalyze).ToList().ForEach(Console.WriteLine);
+            try {
+                var authorCommits = await persistentStorageController.GetAuthorMode(input.Value.RepoPath);
+                Console.WriteLine("-------AUTHOR COMMITS-------");
+                printAuthorLines(authorCommits);
+            }
+            catch (RepositoryNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            
+            // gitCommitTracker.GetCommitAuthor(commitsToAnalyze).ToList().ForEach(Console.WriteLine);
         }
         else
         {
-            Console.WriteLine("-------COMMIT FREQUENCY-------");
-            gitCommitTracker.GetCommitFrequency(commitsToAnalyze).ToList().ForEach(Console.WriteLine);
+            try {
+                var commitCounts = await persistentStorageController.GetFrequencyMode(input.Value.RepoPath);
+                Console.WriteLine("-------COMMIT FREQUENCY-------");
+                printCommitCountLines(commitCounts);            
+            }
+            catch (RepositoryNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            // gitCommitTracker.GetCommitFrequency(commitsToAnalyze).ToList().ForEach(Console.WriteLine);
         }
-        
+    }
+
+    private static void printAuthorLines(IEnumerable<AuthorCommitDTO> authorCommits) {
+        authorCommits.ToList().ForEach(
+            e => {
+                Console.WriteLine(e.name);
+                printCommitCountLines(e.commits);
+                Console.WriteLine(string.Empty);
+            }
+        );
+    }
+    
+    private static void printCommitCountLines(IEnumerable<CommitCountDTO> commitCounts) {
+        commitCounts.ToList().ForEach(e => {
+            Console.WriteLine($"{e.count.ToString().PadLeft(6)} {e.Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}");
+            }
+        );
     }
 }
