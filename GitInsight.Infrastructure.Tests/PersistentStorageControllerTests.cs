@@ -1,4 +1,4 @@
-namespace GitInsight.Tests;
+namespace GitInsight.Infrastructure.Tests;
 
 public class PersistentStorageControllerTests : IDisposable
 {
@@ -27,6 +27,57 @@ public class PersistentStorageControllerTests : IDisposable
         _context.Database.EnsureCreated();
         
         _persistentStorageController = new PersistentStorageController(_context);
+    }
+
+    [Fact]
+    public async Task FrequencyMode_On_TwoCommitRepo_Returns_List_Of_CommitCountDTOs_With_Count_Of_2()
+    {
+        // Given
+        
+    
+        // When
+        var commitCounts = await _persistentStorageController.GetFrequencyMode(TwoCommitRepoPath);
+    
+        // Then
+        commitCounts.First().Date.Date.Should().Be(new DateTime(2022, 11, 6).Date);
+        commitCounts.First().count.Should().Be(2);
+    }
+
+    [Fact]
+    public async void AuthorMode_On_SingleCommitRepo_Returns_List_Of_AuthorCommitDTOs_With_One_Author_With_One_Commit()
+    {
+        // Given
+    
+        // When
+        var authorCommits = await _persistentStorageController.GetAuthorMode(SingleCommitRepoPath);
+    
+        // Then
+        authorCommits.First().commits.First().count.Should().Be(1);
+        authorCommits.First().name.Should().Be("oljh");
+    }
+
+    [Fact]
+    public async void AuthorMode_On_EmptyCommitRepo_Returns_Empty_List()
+    {
+        // Given
+    
+        // When
+        var authorCommits = await _persistentStorageController.GetAuthorMode(EmptyRepoPath);
+
+        // Then
+        authorCommits.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async void FrequencyMode_On_EmptyCommitRepo_Returns_Empty_List()
+    {
+        // Given
+    
+        // When
+        var commitCounts = await _persistentStorageController.GetFrequencyMode(EmptyRepoPath);
+
+        // Then
+        commitCounts.Should().BeEmpty();
     }
     
     [InlineData(EmptyRepoPath)]
