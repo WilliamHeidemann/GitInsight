@@ -14,7 +14,7 @@ public class ProgramTests {
 
         var outputFile = File.OpenText("../../../ExpectedOutput.txt").ReadToEnd().TrimEnd();
          // Act
-        var program = Assembly.Load(nameof(GitInsight));
+        var program = Assembly.Load(nameof(GitInsight.CLI));
         program.EntryPoint?.Invoke(null, new[] { Array.Empty<string>() });
         // Assert
         var output = writer.GetStringBuilder().ToString().TrimEnd();
