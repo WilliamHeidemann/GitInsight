@@ -1,5 +1,5 @@
 using Azure.Core;
-using GitInsight;
+using GitInsight.CLI;
 using GitInsight.Infrastructure;
 
 namespace GitInsight.RestAPI
@@ -12,6 +12,8 @@ namespace GitInsight.RestAPI
         {
             _controller = controller;
             var builder = WebApplication.CreateBuilder();
+
+            GithubAPIController githubAPIController = new();
 
             // Add services to the container.
             builder.Services.AddAuthorization();
@@ -49,6 +51,14 @@ namespace GitInsight.RestAPI
             {
                 var remoteRepoPath = controller.FindAllGithubCommits(githubOrganization, repositoryName);
                 return await controller.GetAuthorMode(remoteRepoPath);
+            });
+
+            app.MapGet("forks/{githubOrganization}/{repositoryName}", async (
+                    string githubOrganization,
+                    string repositoryName)
+                =>
+            {
+                return await githubAPIController.GetForkList(githubOrganization, repositoryName);
             });
 
             app.Run();

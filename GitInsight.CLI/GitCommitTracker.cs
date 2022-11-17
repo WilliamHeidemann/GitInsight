@@ -1,7 +1,7 @@
 using System.Globalization;
 using GitInsight.Core;
 
-namespace GitInsight;
+namespace GitInsight.CLI;
 public class GitCommitTracker
 {
     public IEnumerable<string> GetCommitFrequency(IEnumerable<DbCommitDTO> commitsToAnalyze)
