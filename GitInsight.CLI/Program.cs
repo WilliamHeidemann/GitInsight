@@ -57,7 +57,7 @@ public class Program
         }
     }
 
-    private static void printAuthorLines(IEnumerable<AuthorCommitDTO> authorCommits) {
+    public static void printAuthorLines(IEnumerable<AuthorCommitDTO> authorCommits) {
         authorCommits.ToList().ForEach(
             e => {
                 Console.WriteLine(e.name);
@@ -67,7 +67,7 @@ public class Program
         );
     }
     
-    private static void printCommitCountLines(IEnumerable<CommitCountDTO> commitCounts) {
+    public static void printCommitCountLines(IEnumerable<CommitCountDTO> commitCounts) {
         commitCounts.ToList().ForEach(e => {
             Console.WriteLine($"{e.count.ToString().PadLeft(6)} {e.Date.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}");
             }
