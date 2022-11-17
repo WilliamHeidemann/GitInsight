@@ -21,7 +21,6 @@ public class Program
     {
         
         var input = Parser.Default.ParseArguments<Options>(args);            
-        var gitCommitTracker = new GitCommitTracker();
         
         await using var context = new PersistentStorageContext(); 
         await context.Database.MigrateAsync();
