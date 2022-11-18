@@ -1,6 +1,8 @@
 ﻿@page "/commitfrequency"
 @using System.Globalization
 @using Radzen
+@using System.Text.Json
+@using System.Text.Json.Serialization
 
 <PageTitle>Commit Frequency</PageTitle>
 
@@ -8,21 +10,56 @@
 
 <p>See Commit Frequency History:</p>
 
-<RadzenChart>
-  <RadzenColumnSeries Data="@revenue" CategoryProperty="Quarter" ValueProperty="Revenue" />
-</RadzenChart>
+@if (getBranchesError == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <RadzenChart>
+        <RadzenColumnSeries Title="Commits" Data="@frequency" CategoryProperty="Date" ValueProperty="Frequency"/>
+    </RadzenChart>
+}
 @code {
-  class DataItem
-  {
-      public string Quarter { get; set; }
-      public double Revenue { get; set; }
-  }
+    private IEnumerable<CommitPerDay> frequency = Array.Empty<CommitPerDay>();
+    private bool getBranchesError;
+    private bool shouldRender;
 
-  DataItem[] revenue = new DataItem[]
-  {
-      new DataItem { Quarter = "Q1", Revenue = 234000 },
-      new DataItem { Quarter = "Q2", Revenue = 284000 },
-      new DataItem { Quarter = "Q3", Revenue = 274000 },
-      new DataItem { Quarter = "Q4", Revenue = 294000 }
-  };
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            "https://localhost:7283/frequency/libgit2/libgit2sharp");
+        HttpClientHandler clientHandler = new HttpClientHandler();
+        clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+
+        var client = new HttpClient(clientHandler);
+        
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            frequency = await JsonSerializer.DeserializeAsync
+                <IEnumerable<CommitPerDay>>(responseStream);
+            var freq = frequency.ToArray();
+        }
+        else
+        {
+            getBranchesError = true;
+        }
+
+        shouldRender = true;
+    }
+
+
+    public class CommitPerDay
+    {
+        [JsonPropertyName("count")]
+        public int Frequency { get; set; }
+        [JsonPropertyName("date")]
+        public DateTime Date { get; set; }
+    }
 }
