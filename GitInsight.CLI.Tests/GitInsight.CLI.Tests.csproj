@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\GitInsight.CLI\GitInsight.CLI.csproj" />
     <ProjectReference Include="..\GitInsight.Infrastructure\GitInsight.Infrastructure.csproj" />
+    <ProjectReference Include="..\GitInsight.Core\GitInsight.Core.csproj" />
   </ItemGroup>
 
 </Project>

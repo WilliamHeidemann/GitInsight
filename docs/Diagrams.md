@@ -83,3 +83,27 @@ stateDiagram-v2
     
     JSON_data??? --> [*]
 ```
+
+## Sequence diagram of GitInsight.BlazorApp running frequency mode
+```mermaid
+sequenceDiagram
+    actor me
+    participant blazor as GitInsight.BlazorApp
+    participant rest as GitInsight.RestAPI
+    participant infra as GitInsight.Infrastructure
+    participant db as Database
+    me->>+blazor: handleValidSubmit
+    blazor->>+rest: isValid
+    rest-->>-blazor: valid repo
+    blazor-->>-me: valid repo
+    me->>+blazor: onInizializeAsync
+    blazor->>+rest: GET
+    rest->>+infra: FindAllGithubCommits
+    infra-->>-rest: cloned repo path
+    rest->>+infra: GetFrequencyMode
+    infra->>+db: FindAllCommitsByRepoId
+    db-->>-infra: list of DBCommits
+    infra-->>-rest: list of CommitCountDTO's
+    rest-->>-blazor: list of CommitCountDTO's
+    blazor-->>-me: render data on screen
+```
