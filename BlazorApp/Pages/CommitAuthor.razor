@@ -15,11 +15,20 @@
 }
 else
 {
-    @foreach (var authorCommit in authorCommits)
-    {
-        <p>@authorCommit.Name</p>
-        <p>@authorCommit.TotalCommitCount</p>
-    }
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 my-5">
+                <RadzenChart>
+                    @foreach (var authorCommit in authorCommits)
+                    {
+                        <RadzenLineSeries Smooth="@true" Data="authorCommit.Commits" CategoryProperty="Date" ValueProperty="Count" Title="@authorCommit.Name">
+                            <RadzenMarkers MarkerType="MarkerType.Circle" />
+                        </RadzenLineSeries>
+                    }
+                </RadzenChart>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-lg-6 offset-lg-3 my-5">
