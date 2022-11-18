@@ -40,7 +40,7 @@ public class GithubAPIControllerTests {
         }
     }
 
-    [Fact]
+    [Fact (Skip = "Github Actions workflow does not contain API authentication key")]
     public async void Valid_Repoistory_Should_Return_True()
     {
         // Given
@@ -54,7 +54,7 @@ public class GithubAPIControllerTests {
         result.Should().Be(true);
     }
 
-    [Fact]
+    [Fact (Skip = "Github Actions workflow does not contain API authentication key")]
     public async void Invalid_Repository_Should_Return_False()
     {
         // Given
