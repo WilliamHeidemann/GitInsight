@@ -1,46 +1,57 @@
 # Diagrams
 
 ## Class Diagram showing structure of program
+
 ```plantuml
 @startuml
-() "CommitMode" as commit
-() "AuthorMode" as author
-() "dotnet test" as dotnettest
 
-package "GitInsight" {
-  [GitCommitTracker] as gitinsight
-  [LibGit2Sharp] as lb2s
-
-  [GitInsight.Tests] as test
-
-  () "MSSQL" as mssql
-  () "MySQL inmemory" as mysql
-
-
-  database "PersistantStorage" as db {
-    [DbRepository]
-    [DbCommit]
-  }
+package "GitInsight.BlazorApp" as app {
+    [Program] as app.prog
 }
 
-test --> mysql
-mysql --> db
+package "GitInsight.RestAPI" as rest {
+    [Program] as api.prog
+}
 
-gitinsight --> mssql
-mssql --> db
+    [app.prog] --> [api.prog]
+       
+package "GitInsight.Infrastructure" as inf {
+    [GithubApiController] as gitcontr
+    [PersistentStorageController] as pscontr
+    [DBRepositoryPersistentStorage] as dbrp
+    [DBCommitPersistentStorage] as dbcp
+    [PersistentStorageContext] as psc
+    [DBRepository] as dbr
+    [DBCommit] as dbc
+}
+    [api.prog] --> [gitcontr]
+    [api.prog] --> [pscontr]
+    [pscontr] --> [psc] 
+    [pscontr] --> [dbrp]
+    [pscontr] --> [dbcp] 
+    [dbrp] --> [dbcp] 
+    [dbrp] --> [dbr]
+    [dbcp] --> [dbc]
+ 
+
+package "GitInsight.Core" as core {
+    [AuthorCommitDTO] as adto
+    [CommitCountDTO] as ccdto
+    [DBCommitDTO] as dbcdto
+    [DBRepositoryDTO] as dbrdto
+    [ForkDTO] as fdto
+    [Response] as resp
+}
+
+rest --> core
+inf --> core
 
 
-dotnettest --> test
-commit --> gitinsight
-author --> gitinsight
-
-db --> lb2s
-
-gitinsight --> () output
 @enduml
 ```
 
-![Component Diagram](https://www.plantuml.com/plantuml/svg/NL7DIWCn4BxFKmnxqaCzz06aeY122-hs9ZqaJMY3cysQcO15-kvcChQLNWBVJ_9zCraGcymb3d1pYzrZYZ7mAZdVeI7SDjYKXyBxbC-AQR0fBl7e6TaJDqcnG839R3_DpcFt7FXbfB3RLyyF87vKGiFMkNfytiZLNU2WBh4iWwskURytUMhoOES4ebnUkrlN76gg9Y9AfrNVlorRcqZqDPpOGsKnZD77b0yg7qIMQywmiOPgrrUVAH2RaNjEkTRNiMmhNjEVxBkV4WMkZsnEb0uZy0X702c3izdzNq0x6tOMu3ocMhIYd1SBNBOed0wdto7u_wRqAwvPS5OetTbreYo3_JSNCs0gF1NkOE57L-Bm2m00)
+![Component Diagram](https://www.plantuml.com/plantuml/svg/XLDBJiCm4Dtx557txH5GqrIWhgWAEvI5cxgfrSIsnXE9ZteNpiB9c3YP6AY1h3BlFS_pVBpqA06xjX72oUeiQvNDxZHkZDVr2HUhHhvQo9sRPT9dqhdiJMJqFMt1rY3RSeGNZc9nIIVPAO_vTXDI0FsdSsZECP2SjCpcyniAHxuCB7r9fuqvWlG8NOKTg62epP7zI7ZgzhdJXJK8jcaK1EzQOzKZuwqKUErH6Nn02-JmG-ty5_5wjLFEUatAbwk3GNxOWsDjOTjMus-wolrn0VMCx7xjp4RVVJYjk0Gyjl3ZFRIKooxJjFEHZL4aoop9zFMcp_GLyg6W-XTdyw28QaBJYrROSUWL_V3KymvF5eQMh1_lXsqxe1tO0IziPoQogYQMMyaKcHDtFO38myJVMZWpVfnGUWlE6Z_C72Ze5puy2gekt5lGniP0YAKo1tgVdm00)
+
 
 ## Architectural Diagram of REST Api
 
@@ -82,4 +93,28 @@ stateDiagram-v2
     FindAllCommitsByRepoId --> JSON_data???
     
     JSON_data??? --> [*]
+```
+
+## Sequence diagram of GitInsight.BlazorApp running frequency mode
+```mermaid
+sequenceDiagram
+    actor me
+    participant blazor as GitInsight.BlazorApp
+    participant rest as GitInsight.RestAPI
+    participant infra as GitInsight.Infrastructure
+    participant db as Database
+    me->>+blazor: handleValidSubmit
+    blazor->>+rest: isValid
+    rest-->>-blazor: valid repo
+    blazor-->>-me: valid repo
+    me->>+blazor: onInizializeAsync
+    blazor->>+rest: GET
+    rest->>+infra: FindAllGithubCommits
+    infra-->>-rest: cloned repo path
+    rest->>+infra: GetFrequencyMode
+    infra->>+db: FindAllCommitsByRepoId
+    db-->>-infra: list of DBCommits
+    infra-->>-rest: list of CommitCountDTO's
+    rest-->>-blazor: list of CommitCountDTO's
+    blazor-->>-me: render data on screen
 ```
