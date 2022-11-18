@@ -1,4 +1,4 @@
-namespace GitInsight.Tests;
+namespace GitInsight.CLI.Tests;
 
 public class GitCommitTrackerTests
 {
