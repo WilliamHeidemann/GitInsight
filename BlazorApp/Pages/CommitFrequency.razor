@@ -10,7 +10,7 @@
 
 <p>See Commit Frequency History:</p>
 
-@if (getBranchesError == null)
+@if (getCommitsError == null)
 {
     <p>
         <em>Loading...</em>
@@ -24,7 +24,7 @@ else
 }
 @code {
     private IEnumerable<CommitPerDay> frequency = Array.Empty<CommitPerDay>();
-    private bool getBranchesError;
+    private bool getCommitsError;
     private bool shouldRender;
 
     protected override async Task OnInitializedAsync()
@@ -48,7 +48,7 @@ else
         }
         else
         {
-            getBranchesError = true;
+            getCommitsError = true;
         }
 
         shouldRender = true;

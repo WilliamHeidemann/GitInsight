@@ -1,15 +1,14 @@
 ﻿@page "/forks"
+@using System.Text.Json
+@using System.Text.Json.Serialization
 
 <PageTitle>Forks</PageTitle>
-
-@using BlazorApp.Data
-@inject ForksList ForksList
 
 <h1>Forks</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
 
-@if (forkList == null)
+@if (getForksError == null)
 {
     <p>
         <em>Loading...</em>
@@ -17,29 +16,72 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Forks</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var fork in forkList)
-        {
-            <tr>
-                <td>@fork.Identifier</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true"
+                    Data="@forks" TItem="Fork" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or">
+        <Columns>
+            <RadzenDataGridColumn TItem="Fork" Title="Photo" Frozen="true" Sortable="false" Filterable="false" Width="80px" TextAlign="TextAlign.Center" >
+                <Template Context="data">
+                    <RadzenImage Path="@data.owner.ImageURL" class="rz-gravatar" />
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Fork" Property="Name" Filterable="false" Title="Name of fork" Frozen="true" Width="80px" TextAlign="TextAlign.Center"/>
+            <RadzenDataGridColumn TItem="Fork" Property="owner.Username" Title="Username" Width="160px"/>
+            <RadzenDataGridColumn TItem="Fork" Title="Link" Frozen="true" Width="160px">
+                <Template Context="data">
+                    <RadzenLink Path="@data.Url" Text = "GitHub Link"></RadzenLink>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
 }
 
 @code {
-    private Fork[]? forkList;
+    private IEnumerable<Fork> forks = Array.Empty<Fork>();
+    private bool getForksError;
+    private bool shouldRender;
 
     protected override async Task OnInitializedAsync()
     {
-        forkList = await ForksList.GetForksAsync();
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            "https://localhost:7283/forks/itu-bdsa/assignment-02");
+        HttpClientHandler clientHandler = new HttpClientHandler();
+        clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+
+        var client = new HttpClient(clientHandler);
+        
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            forks = await JsonSerializer.DeserializeAsync
+                <IEnumerable<Fork>>(responseStream);
+        }
+        else
+        {
+            getForksError = true;
+        }
+
+        shouldRender = true;
+    }
+
+    public record Fork
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("html_url")]
+        public string Url { get; set; }
+        [JsonPropertyName("owner")]
+        public Owner owner { get; set; }
+    }
+
+    public record Owner
+    {
+        [JsonPropertyName("login")]
+        public string Username { get; set; }
+        [JsonPropertyName("avatar_url")]
+        public string ImageURL { get; set; }
     }
 
 }
