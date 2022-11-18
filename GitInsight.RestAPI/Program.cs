@@ -35,6 +35,14 @@ namespace GitInsight.RestAPI
 
             app.UseAuthorization();
 
+            app.MapGet("validRepository/{githubOrganization}/{repositoryName}", (
+                    string githubOrganization,
+                    string repositoryName)
+                =>
+            {
+                return githubAPIController.IsRepositoryValid(githubOrganization, repositoryName);
+            });
+
             app.MapGet("frequency/{githubOrganization}/{repositoryName}", async (
                     string githubOrganization,
                     string repositoryName)

@@ -31,6 +31,12 @@ public class GithubAPIController {
         return forks!;
     }
 
+    public async Task<bool> IsRepositoryValid(string githubOrganization, string repositoryName)
+    {
+        var response = await _client.GetAsync($"/repos/{githubOrganization}/{repositoryName}");
+        return response.IsSuccessStatusCode;
+    }
+
     public class Fork 
     {
         [JsonPropertyName("full_name")]
