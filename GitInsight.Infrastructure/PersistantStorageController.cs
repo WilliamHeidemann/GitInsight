@@ -24,7 +24,7 @@ public class PersistentStorageController : IPersistentStorageController
 
     public async Task<IEnumerable<DbCommitDTO>> FindAllCommitsAsync(string filePath)
     {
-        if (!Repository.IsValid(filePath)) throw new RepositoryNotFoundException("The Repository does not exist. Please provide a valid filepath.");
+        if (!Repository.IsValid(filePath)) throw new RepositoryNotFoundException($"{filePath} is not a valid repository. Please provide a valid filepath.");
         var (id, response) = await CreateRepoWithCommits(filePath);
         if (response == Response.Conflict) await UpdateRepoWithNewCommits(filePath);
         var (commits, findResponse) = _dbCommitPersistentStorage.FindAllCommitsByRepoId(id);
@@ -33,14 +33,14 @@ public class PersistentStorageController : IPersistentStorageController
 
     public async Task<IEnumerable<CommitCountDTO>> GetFrequencyMode(string filePath)
     {
-        var commits = await getCommits(filePath);
+        var commits = await FindAllCommitsAsync(filePath);
 
         return GroupCommitsByDate(commits);
     }
 
     public async Task<IEnumerable<AuthorCommitDTO>> GetAuthorMode(string filePath)
     {
-        var commits = await getCommits(filePath);
+        var commits = await FindAllCommitsAsync(filePath);
 
         return GroupByAuthors(commits);
     }
@@ -53,15 +53,6 @@ public class PersistentStorageController : IPersistentStorageController
         {
             yield return new(GroupCommitsByDate(authorcommits), authorcommits.First().AuthorName);
         }
-    }
-
-    private async Task<IReadOnlyCollection<DbCommitDTO>> getCommits(string filePath)
-    {
-        if (!Repository.IsValid(filePath)) throw new RepositoryNotFoundException($"The Repository {filePath} does not exist. Please provide a valid filepath.");
-        var (id, response) = await CreateRepoWithCommits(filePath);
-        if (response == Response.Conflict) await UpdateRepoWithNewCommits(filePath);
-        var (commits, findResponse) = _dbCommitPersistentStorage.FindAllCommitsByRepoId(id);
-        return commits;
     }
 
     private IEnumerable<CommitCountDTO> GroupCommitsByDate(IEnumerable<DbCommitDTO> commits)
