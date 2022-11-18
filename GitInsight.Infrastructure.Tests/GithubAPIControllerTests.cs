@@ -39,4 +39,32 @@ public class GithubAPIControllerTests {
             item.name.Should().Be("A-Guldborg/ForkedRepo");
         }
     }
+
+    [Fact]
+    public async void Valid_Repoistory_Should_Return_True()
+    {
+        // Given
+        string owner = "itu-bdsa";
+        string repo = "project-description";
+    
+        // When
+        var result = await _githubAPIController.IsRepositoryValid(owner, repo);
+    
+        // Then
+        result.Should().Be(true);
+    }
+
+    [Fact]
+    public async void Invalid_Repository_Should_Return_False()
+    {
+        // Given
+        string owner = "WilliamHeidemann";
+        string repo = "InsightGit";
+    
+        // When
+        var result = await _githubAPIController.IsRepositoryValid(owner, repo);
+    
+        // Then
+        result.Should().Be(false);
+    }
 }
