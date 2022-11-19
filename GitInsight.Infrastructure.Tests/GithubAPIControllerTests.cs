@@ -36,7 +36,7 @@ public class GithubAPIControllerTests {
 
         //Assert
         foreach (var item in result) {
-            item.name.Should().Be("A-Guldborg/ForkedRepo");
+            item.name.Should().Be("ForkedRepo");
         }
     }
 
