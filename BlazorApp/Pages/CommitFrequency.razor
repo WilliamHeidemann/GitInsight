@@ -3,17 +3,24 @@
 @using Radzen
 @using System.Text.Json
 @using System.Text.Json.Serialization
+@inject Data.StartPageModel startPageModel
 
 <PageTitle>Commit Frequency</PageTitle>
 
-<h1>Commit Frequency</h1>
+<h1>Commit Frequency for @startPageModel.RepoPath</h1>
 
-<p>See Commit Frequency History:</p>
+<p>Commit Frequency History:</p>
 
 @if (getCommitsError == null)
 {
     <p>
         <em>Loading...</em>
+    </p>
+}
+else if (!startPageModel.IsValidRepo)
+{
+    <p>
+        Repository Path was not valid
     </p>
 }
 else
@@ -30,7 +37,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
-            "https://localhost:7283/frequency/libgit2/libgit2sharp");
+            "https://localhost:7283/frequency/"  + startPageModel.RepoPath);
         HttpClientHandler clientHandler = new HttpClientHandler();
         clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
