@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -15,8 +16,12 @@ public class GithubAPIController {
 
         _client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("AppName", "1.0"));
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", token);
-
     }
+
+    public GithubAPIController(HttpClient MockClient) {
+        _client = MockClient;
+    }
+
     public async Task<IEnumerable<ForkDTO>> GetForkList(string owner, string repo) 
     {
         var response = await _client.GetAsync("/repos/" + owner + "/" + repo + "/forks");
