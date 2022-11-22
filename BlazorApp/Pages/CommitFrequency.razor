@@ -30,8 +30,8 @@ else
     </RadzenChart>
 }
 @code {
-    private IEnumerable<CommitPerDay> frequency = Array.Empty<CommitPerDay>();
-    private bool getCommitsError;
+    private IEnumerable<CommitPerDay>? frequency = Array.Empty<CommitPerDay>();
+    private bool? getCommitsError;
     private bool shouldRender;
 
     protected override async Task OnInitializedAsync()
@@ -51,7 +51,6 @@ else
             using var responseStream = await response.Content.ReadAsStreamAsync();
             frequency = await JsonSerializer.DeserializeAsync
                 <IEnumerable<CommitPerDay>>(responseStream);
-            var freq = frequency.ToArray();
         }
         else
         {
