@@ -42,8 +42,8 @@ else
 }
 
 @code {
-    private IEnumerable<Fork> forks = Array.Empty<Fork>();
-    private bool getForksError;
+    private IEnumerable<Fork>? forks = Array.Empty<Fork>();
+    private bool? getForksError;
     private bool shouldRender;
 
     protected override async Task OnInitializedAsync()
@@ -75,19 +75,19 @@ else
     public record Fork
     {
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
         [JsonPropertyName("html_url")]
-        public string Url { get; set; }
+        public string Url { get; set; } = null!;
         [JsonPropertyName("owner")]
-        public Owner owner { get; set; }
+        public Owner owner { get; set; } = null!;
     }
 
     public record Owner
     {
         [JsonPropertyName("login")]
-        public string Username { get; set; }
+        public string Username { get; set; } = null!;
         [JsonPropertyName("avatar_url")]
-        public string ImageURL { get; set; }
+        public string ImageURL { get; set; } = null!;
     }
 
 }

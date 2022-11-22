@@ -26,7 +26,7 @@ else
         <div class="row">
             <div class="col-sm-12 my-5">
                 <RadzenChart>
-                    @foreach (var authorCommit in authorCommits)
+                    @foreach (var authorCommit in authorCommits!)
                     {
                         <RadzenLineSeries Smooth="@true" Data="authorCommit.Commits" CategoryProperty="Date" ValueProperty="Count" Title="@authorCommit.Name">
                             <RadzenMarkers MarkerType="MarkerType.Circle" />
@@ -48,8 +48,8 @@ else
 }
 
 @code {
-    private IEnumerable<AuthorCommit> authorCommits = Array.Empty<AuthorCommit>();
-    private bool getAuthorError;
+    private IEnumerable<AuthorCommit>? authorCommits = Array.Empty<AuthorCommit>();
+    private bool? getAuthorError;
     private bool shouldRender;
 
     protected override bool ShouldRender() => shouldRender;
@@ -75,8 +75,8 @@ else
 
     public class AuthorCommit
     {
-        [JsonPropertyName("commits")] public CommitCount[] Commits { get; set; }
-        [JsonPropertyName("name")] public string Name { get; set; }
+        [JsonPropertyName("commits")] public CommitCount[] Commits { get; set; } = null!;
+        [JsonPropertyName("name")] public string Name { get; set; } = null!;
         public int TotalCommitCount => Commits.Sum(commitsByDate => commitsByDate.Count);
     }
 
