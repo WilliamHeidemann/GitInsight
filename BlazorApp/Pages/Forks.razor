@@ -1,17 +1,23 @@
 ﻿@page "/forks"
 @using System.Text.Json
 @using System.Text.Json.Serialization
+@inject Data.StartPageModel startPageModel
 
 <PageTitle>Forks</PageTitle>
 
-<h1>Forks</h1>
+<h1>Forks from @startPageModel.RepoPath</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
+<p>Forks:</p>
 
 @if (getForksError == null)
 {
     <p>
         <em>Loading...</em>
+    </p>
+} else if(!startPageModel.IsValidRepo) 
+{
+    <p>
+        Repository Path was not valid
     </p>
 }
 else
@@ -43,7 +49,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
-            "https://localhost:7283/forks/itu-bdsa/assignment-02");
+            "https://localhost:7283/forks/" + startPageModel.RepoPath);
         HttpClientHandler clientHandler = new HttpClientHandler();
         clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
