@@ -9,12 +9,7 @@
 
 <p>Forks:</p>
 
-@if (getForksError == null)
-{
-    <p>
-        <em>Loading...</em>
-    </p>
-} else if(!startPageModel.IsValidRepo) 
+@if(!startPageModel.IsValidRepo) 
 {
     <p>
         Repository Path was not valid
@@ -43,8 +38,6 @@ else
 
 @code {
     private IEnumerable<Fork>? forks = Array.Empty<Fork>();
-    private bool? getForksError;
-    private bool shouldRender;
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,12 +57,6 @@ else
             forks = await JsonSerializer.DeserializeAsync
                 <IEnumerable<Fork>>(responseStream);
         }
-        else
-        {
-            getForksError = true;
-        }
-
-        shouldRender = true;
     }
 
     public record Fork

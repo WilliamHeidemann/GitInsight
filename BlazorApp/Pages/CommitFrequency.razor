@@ -11,13 +11,7 @@
 
 <p>Commit Frequency History:</p>
 
-@if (getCommitsError == null)
-{
-    <p>
-        <em>Loading...</em>
-    </p>
-}
-else if (!startPageModel.IsValidRepo)
+@if (!startPageModel.IsValidRepo)
 {
     <p>
         Repository Path was not valid
@@ -31,8 +25,6 @@ else
 }
 @code {
     private IEnumerable<CommitPerDay>? frequency = Array.Empty<CommitPerDay>();
-    private bool? getCommitsError;
-    private bool shouldRender;
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,12 +44,6 @@ else
             frequency = await JsonSerializer.DeserializeAsync
                 <IEnumerable<CommitPerDay>>(responseStream);
         }
-        else
-        {
-            getCommitsError = true;
-        }
-
-        shouldRender = true;
     }
 
 
