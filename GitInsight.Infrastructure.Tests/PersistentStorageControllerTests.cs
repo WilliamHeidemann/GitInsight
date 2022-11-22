@@ -29,7 +29,7 @@ public class PersistentStorageControllerTests : IDisposable
         _persistentStorageController = new PersistentStorageController(_context);
     }
 
-    [Fact (Skip = "Unzipping does not work on Github Actions")]
+    [Fact]
     public async Task FrequencyMode_On_TwoCommitRepo_Returns_List_Of_CommitCountDTOs_With_Count_Of_2()
     {
         // Given
@@ -43,7 +43,7 @@ public class PersistentStorageControllerTests : IDisposable
         commitCounts.First().count.Should().Be(2);
     }
 
-    [Fact (Skip = "Unzipping does not work on Github Actions")]
+    [Fact]
     public async void AuthorMode_On_SingleCommitRepo_Returns_List_Of_AuthorCommitDTOs_With_One_Author_With_One_Commit()
     {
         // Given
@@ -56,7 +56,7 @@ public class PersistentStorageControllerTests : IDisposable
         authorCommits.First().name.Should().Be("oljh");
     }
 
-    [Fact (Skip = "Unzipping does not work on Github Actions")]
+    [Fact]
     public async void AuthorMode_On_EmptyCommitRepo_Returns_Empty_List()
     {
         // Given
@@ -68,7 +68,7 @@ public class PersistentStorageControllerTests : IDisposable
         authorCommits.Should().BeEmpty();
     }
 
-    [Fact (Skip = "Unzipping does not work on Github Actions")]
+    [Fact]
     public async void FrequencyMode_On_EmptyCommitRepo_Returns_Empty_List()
     {
         // Given
@@ -84,7 +84,7 @@ public class PersistentStorageControllerTests : IDisposable
     [InlineData(SingleCommitRepoPath)]
     [InlineData(TwoCommitRepoPath)]
     [InlineData(ThreeCommitRepoPath)]
-    [Theory (Skip = "Unzipping does not work on Github Actions")]
+    [Theory]
     public async Task FindAllCommitsAsync_Creates_Repo_Given_New_Repo(string filePath) 
     {
         // Arrange
@@ -97,7 +97,7 @@ public class PersistentStorageControllerTests : IDisposable
         repo.Should().NotBeNull();
     }
 
-    [Fact (Skip = "Unzipping does not work on Github Actions")]
+    [Fact]
     public async Task FindAllCommitsAsync_Throws_Exception_Given_NonexistentPath()
     {
         // Act
@@ -109,7 +109,7 @@ public class PersistentStorageControllerTests : IDisposable
     }
 
     [InlineData(EmptyRepoPath)]
-    [Theory (Skip = "Unzipping does not work on Github Actions")]
+    [Theory]
     public async Task FindAllCommitsAsync_Given_New_Repo(string filePath)
     {
         // Arrange
@@ -130,7 +130,7 @@ public class PersistentStorageControllerTests : IDisposable
     [InlineData(SingleCommitRepoPath)]
     [InlineData(TwoCommitRepoPath)]
     [InlineData(ThreeCommitRepoPath)]
-    [Theory (Skip = "Unzipping does not work on Github Actions")]
+    [Theory]
     public async Task FindAllCommitsAsync_Updates_Existing_Repo(string filePath)
     {
         // Arrange
@@ -151,7 +151,7 @@ public class PersistentStorageControllerTests : IDisposable
     [InlineData(SingleCommitRepoPath)]
     [InlineData(TwoCommitRepoPath)]
     [InlineData(ThreeCommitRepoPath)]
-    [Theory (Skip = "Unzipping does not work on Github Actions")]
+    [Theory]
     public async Task FindAllCommitsAsync_Updates_Repo_With_Missing_Commits(string filePath)
     {
         // Arrange
@@ -174,7 +174,7 @@ public class PersistentStorageControllerTests : IDisposable
     [InlineData(SingleCommitRepoPath, 1)]
     [InlineData(TwoCommitRepoPath, 2)]
     [InlineData(ThreeCommitRepoPath, 3)]
-    [Theory (Skip = "Unzipping does not work on Github Actions")]
+    [Theory]
     public async Task FindAllCommitsAsync_Correct_Number_Of_Commits(string filePath, int numCommits)
     {
         // Arrange
