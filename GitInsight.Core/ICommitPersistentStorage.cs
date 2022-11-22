@@ -1,8 +1,8 @@
 namespace GitInsight.Core;
 
 public interface ICommitPersistentStorage{
-    (string, Response) Create(DbCommitCreateDTO dbCommitCreate);
-    Task<(DbCommitDTO?, Response)> FindAsync(string SHA);
-    Task<Response> DeleteAsync(string SHA);
-    (IReadOnlyCollection<DbCommitDTO>, Response) FindAllCommitsByRepoId(int repoId);
+    Results<Created<DbCommitCreateDTO>, Conflict<string>> Create(DbCommitCreateDTO dbCommitCreate);
+    Task<Results<Ok<DbCommitDTO>, NotFound<string>>> FindAsync(string SHA);
+    Task<Results<NoContent, NotFound<string>>> DeleteAsync(string SHA);
+    Results<Ok<IReadOnlyCollection<DbCommitDTO>>, NotFound<int>> FindAllCommitsByRepoId(int repoId);
 }

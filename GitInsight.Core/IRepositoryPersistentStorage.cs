@@ -1,8 +1,8 @@
 namespace GitInsight.Core;
 
 public interface IRepositoryPersistentStorage{
-    Task<(int, Response)> CreateAsync(DbRepositoryCreateDTO dbRepositoryCreate);
-    Task<(DbRepositoryDTO?, Response)> FindAsync(string filePath);
-    Task UpdateNewestCommitSHA(string SHA, int repoId);
+    Task<Results<Created<DbCommitCreateDTO>, ValidationProblem, Conflict<int>>> CreateAsync(DbRepositoryCreateDTO dbRepositoryCreate);
+    Task<Results<Ok<DbRepositoryDTO>, NotFound<string>>> FindAsync(string filePath);
+    Task<Results<NoContent, NotFound<int>>> UpdateNewestCommitSHA(string SHA, int repoId);
     
 }
