@@ -1,7 +1,4 @@
-using GitInsight.Core;
-using GitInsight.Infrastructure;
-
-namespace GitInsight;
+namespace GitInsight.Infrastructure;
 
 public interface IPersistentStorageController
 {
