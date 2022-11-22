@@ -8,13 +8,7 @@
 
 <p>Commit Author History:</p>
 
-@if (getAuthorError == null)
-{
-    <p>
-        <em>Loading...</em>
-    </p>
-}
-else if (!startPageModel.IsValidRepo)
+@if (!startPageModel.IsValidRepo)
 {
     <p>
         Repository Path was not valid
@@ -49,10 +43,6 @@ else
 
 @code {
     private IEnumerable<AuthorCommit>? authorCommits = Array.Empty<AuthorCommit>();
-    private bool? getAuthorError;
-    private bool shouldRender;
-
-    protected override bool ShouldRender() => shouldRender;
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,11 +56,6 @@ else
             await using var responseStream = await response.Content.ReadAsStreamAsync();
             authorCommits = await JsonSerializer.DeserializeAsync<IEnumerable<AuthorCommit>>(responseStream);
         }
-        else
-        {
-            getAuthorError = true;
-        }
-        shouldRender = true;
     }
 
     public class AuthorCommit
