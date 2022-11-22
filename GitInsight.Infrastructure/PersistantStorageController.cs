@@ -16,7 +16,7 @@ public class PersistentStorageController : IPersistentStorageController
     public PersistentStorageController(PersistentStorageContext context)
     {
         _dbCommitPersistentStorage = new DbCommitPersistentStorage(context);
-        _dbRepositoryPersistentStorage = new DbRepositoryPersistentStorage(context);
+        _dbRepositoryPersistentStorage = new DbRepositoryPersistentStorage(context, new DbRepositoryValidator());
     }
 
     public async Task<IEnumerable<DbCommitDTO>> FindAllCommitsAsync(string filePath)

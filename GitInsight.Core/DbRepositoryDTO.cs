@@ -5,3 +5,11 @@ public record DbRepositoryDTO(int RepoId, string Filepath, string NewestCommitSh
 public record DbRepositoryUpdateDTO(string FilePath);
 
 public record DbRepositoryCreateDTO(string Filepath);
+
+public sealed class DbRepositoryValidator : AbstractValidator<DbRepositoryCreateDTO>
+{
+    public DbRepositoryValidator()
+    {
+        RuleFor(x => x.Filepath).Must(Repository.IsValid);
+    }
+}

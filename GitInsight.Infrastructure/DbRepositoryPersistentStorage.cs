@@ -5,66 +5,46 @@ namespace GitInsight.Infrastructure;
 internal class DbRepositoryPersistentStorage : IRepositoryPersistentStorage
 {
     private PersistentStorageContext _context;
-    public DbRepositoryPersistentStorage(PersistentStorageContext context)
+    private DbRepositoryValidator _validator;
+    public DbRepositoryPersistentStorage(PersistentStorageContext context, DbRepositoryValidator validator)
     {
         _context = context;
+        _validator = validator;
     }
 
-    public async Task<Results<Created<DbRepository>, ValidationProblem, Conflict<int>>> CreateAsync(DbRepositoryCreateDTO dbRepositoryCreate)
+    public async Task<Results<Created<DbRepositoryCreateDTO>, ValidationProblem, Conflict<int>>> CreateAsync(DbRepositoryCreateDTO dbRepositoryCreate)
     {
+        var validation = await _validator.ValidateAsync(dbRepositoryCreate);
+
+        if (!validation.IsValid) return TypedResults.ValidationProblem(validation.ToDictionary());
+
         var entity = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == dbRepositoryCreate.Filepath);
-       if(entity is not null) return (entity.Id, Response.Conflict);
-       if (!LibGit2Sharp.Repository.IsValid(dbRepositoryCreate.Filepath)) return (-1, Response.BadRequest); //-1 because it is not a valid repo
-       entity = new DbRepository(dbRepositoryCreate.Filepath)
-       {
-           NewestCommitSHA = null // should be set later
-       };
+        if(entity is not null) return TypedResults.Conflict(entity.Id);
+       
+        entity = new DbRepository(dbRepositoryCreate.Filepath)
+        {
+            NewestCommitSHA = null // should be set later
+        };
 
-       _context.Repositories.Add(entity);
+        _context.Repositories.Add(entity);
+        await _context.SaveChangesAsync();
 
-       await _context.SaveChangesAsync();
-
-       return (entity.Id, Response.Created);
+        return TypedResults.Created($"{entity.FilePath}", dbRepositoryCreate with { Filepath = entity.FilePath });
     }
 
-    public Task<Results<Ok<DbRepositoryDTO>, NotFound<string>>> FindAsync(string filePath)
+    public async Task<Results<Ok<DbRepositoryDTO>, NotFound<string>>> FindAsync(string filePath)
     {
-        throw new NotImplementedException();
+        var repo = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == filePath);
+        if(repo is null) return TypedResults.NotFound(filePath);
+        return TypedResults.Ok(new DbRepositoryDTO(repo.Id, repo.FilePath, repo.NewestCommitSHA!));
     }
 
-    public Task<Results<NoContent, NotFound<int>>> UpdateNewestCommitSHA(string SHA, int repoId)
+    public async Task<Results<NoContent, NotFound<int>>> UpdateNewestCommitSHA(string SHA, int repoId)
     {
-        throw new NotImplementedException();
+        var repo = await _context.Repositories.FirstOrDefaultAsync(t => t.Id == repoId);
+        if(repo is null) return TypedResults.NotFound(repoId);
+        repo!.NewestCommitSHA = SHA;
+        await _context.SaveChangesAsync();
+        return TypedResults.NoContent();
     }
-    /*
-   public async Task<(int, Response)> CreateAsync(DbRepositoryCreateDTO dbRepositoryCreate)
-   {
-       var entity = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == dbRepositoryCreate.Filepath);
-       if(entity is not null) return (entity.Id, Response.Conflict);
-       if (!LibGit2Sharp.Repository.IsValid(dbRepositoryCreate.Filepath)) return (-1, Response.BadRequest); //-1 because it is not a valid repo
-       entity = new DbRepository(dbRepositoryCreate.Filepath)
-       {
-           NewestCommitSHA = null // should be set later
-       };
-
-       _context.Repositories.Add(entity);
-
-       await _context.SaveChangesAsync();
-
-       return (entity.Id, Response.Created);
-   }
-
-   public async Task<(DbRepositoryDTO?, Response)> FindAsync(string filePath)
-   {
-       var repo = await _context.Repositories.FirstOrDefaultAsync(t => t.FilePath == filePath);
-       if(repo is null) return (null, Response.NotFound);
-       return (new DbRepositoryDTO(repo.Id, repo.FilePath, repo.NewestCommitSHA!), Response.Found);
-   }
-
-   public async Task UpdateNewestCommitSHA(string SHA, int repoId) {
-       var repo = await _context.Repositories.FirstOrDefaultAsync(t => t.Id == repoId);
-       repo!.NewestCommitSHA = SHA;
-       await _context.SaveChangesAsync();
-   }
-   */
 }
