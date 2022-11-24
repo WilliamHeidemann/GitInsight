@@ -1,9 +1,11 @@
 # Diagrams
 
-## Class Diagram showing structure of program
+## Package Diagram showing architecture of program 
 
 ```plantuml
 @startuml
+
+skinparam componentStyle rectangle
 
 package "GitInsight.BlazorApp" as app {
     [Program] as app.prog
@@ -13,7 +15,7 @@ package "GitInsight.RestAPI" as rest {
     [Program] as api.prog
 }
 
-    [app.prog] --> [api.prog]
+    [app.prog] ..> [api.prog]
        
 package "GitInsight.Infrastructure" as inf {
     [GithubApiController] as gitcontr
@@ -24,15 +26,15 @@ package "GitInsight.Infrastructure" as inf {
     [DBRepository] as dbr
     [DBCommit] as dbc
 }
-    [api.prog] --> [gitcontr]
-    [api.prog] --> [pscontr]
-    [pscontr] --> [psc] 
-    [pscontr] --> [dbrp]
-    [pscontr] --> [dbcp] 
-    [dbrp] --> [dbcp] 
-    [dbrp] --> [dbr]
-    [dbcp] --> [dbc]
- 
+    [api.prog] ..> [gitcontr]
+    [api.prog] ..> [pscontr]
+    [pscontr] ..> [psc] 
+    [pscontr] ..> [dbrp]
+    [pscontr] ..> [dbcp] 
+    [dbrp] ..> [dbcp] 
+    [dbrp] ..> [dbr]
+    [dbcp] ..> [dbc]
+
 
 package "GitInsight.Core" as core {
     [AuthorCommitDTO] as adto
@@ -43,14 +45,14 @@ package "GitInsight.Core" as core {
     [Response] as resp
 }
 
-rest --> core
-inf --> core
+rest ..> core
+inf ..> core
 
 
 @enduml
 ```
 
-![Component Diagram](https://www.plantuml.com/plantuml/svg/XLDBJiCm4Dtx557txH5GqrIWhgWAEvI5cxgfrSIsnXE9ZteNpiB9c3YP6AY1h3BlFS_pVBpqA06xjX72oUeiQvNDxZHkZDVr2HUhHhvQo9sRPT9dqhdiJMJqFMt1rY3RSeGNZc9nIIVPAO_vTXDI0FsdSsZECP2SjCpcyniAHxuCB7r9fuqvWlG8NOKTg62epP7zI7ZgzhdJXJK8jcaK1EzQOzKZuwqKUErH6Nn02-JmG-ty5_5wjLFEUatAbwk3GNxOWsDjOTjMus-wolrn0VMCx7xjp4RVVJYjk0Gyjl3ZFRIKooxJjFEHZL4aoop9zFMcp_GLyg6W-XTdyw28QaBJYrROSUWL_V3KymvF5eQMh1_lXsqxe1tO0IziPoQogYQMMyaKcHDtFO38myJVMZWpVfnGUWlE6Z_C72Ze5puy2gekt5lGniP0YAKo1tgVdm00)
+![Package Diagram](https://www.plantuml.com/plantuml/svg/XLD1JiCm4Bpx5LOVa2UWfgb0FL4LRYW7rtLJgubtjTv85DI_y1PUXkFK2T0KSlBEZ6VizMRkMH6tJIs4Frg7YbGZDJG8pZX-ubDj91dDobMr4GALFghAoDc3vPNpjZfmjgZL6r2EE9FAIuKetuKCtykQe0fsvGNECDJYF6soCPxpzIfQK5XFUzZaqPF9j9HPTjULjYyZ6xx9f9NRa_9ChUQMJ0oqRf_oWl3GRdEq1JWcg6j3CRkoh3laSYf3tdgE7G8A2R_KwB-9bukDGV0sA4zN6wDyjoLCsWAQnl8jdSO_3c1UEQLV9wUWdpd9LfmZFhRmyoEsD5sxdARHZ-nOZMGf9vdklkKDHcFQ55N_uYayAaPrAQRdh83Bc-kmI8-Ujtm0wZkoV7xiXst7qBCzNa3h1bBhnAPE3bJ83jnr_qUU1luUw9Zm_O1kZ4TmtaIOGj7DU_mdmkNYkKKOsB4GOcxShctgBm00)
 
 
 ## Architectural Diagram of REST Api
