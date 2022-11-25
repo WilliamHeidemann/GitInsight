@@ -20,8 +20,18 @@
 else
 {
     <RadzenChart>
-        <RadzenColumnSeries Title="Total commit line changes per commit" Data="@commitStats" CategoryProperty="Commit.Author.Date" ValueProperty="Stats.Total"/>
-        <RadzenColumnOptions Radius="5" Width="20" />
+        <RadzenColumnSeries Title="Total line changes per commit" Data="@commitStats" CategoryProperty="Commit.Author.Date" ValueProperty="Stats.Total"/>
+        <RadzenColumnOptions Radius="5" Width="10" />
+        <RadzenCategoryAxis Padding="20" />
+    </RadzenChart>
+    <RadzenChart>
+        <RadzenColumnSeries Title="Line additions per commit" Data="@commitStats" CategoryProperty="Commit.Author.Date" ValueProperty="Stats.Additions" Fill="green"/>
+        <RadzenColumnOptions Radius="5" Width="10" />
+        <RadzenCategoryAxis Padding="20" />
+    </RadzenChart>
+    <RadzenChart>
+        <RadzenColumnSeries Title="Line deletions per commit" Data="@commitStats" CategoryProperty="Commit.Author.Date" ValueProperty="Stats.Deletions" Fill="red"/>
+        <RadzenColumnOptions Radius="5" Width="10" />
         <RadzenCategoryAxis Padding="20" />
     </RadzenChart>
 }
