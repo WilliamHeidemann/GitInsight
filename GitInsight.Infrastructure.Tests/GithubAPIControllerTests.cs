@@ -8,8 +8,11 @@ using Moq;
 
 public class GithubAPIControllerTests {
 
-    public GithubAPIController Setup(IEnumerable<ForkDTO> expectedAPIResponse, HttpStatusCode statusCode)
+    public GithubAPIController Setup(HttpStatusCode statusCode, string owner, string repo, string type)
     {
+        var filepath = $"../../../github-responses/{owner}-{repo}-{type}";
+        var expectedAPIResponse = File.ReadAllText(filepath);
+
         var JsonString = JsonSerializer.Serialize(expectedAPIResponse);
         var content = new StringContent(JsonString, Encoding.UTF8, "application/json");
         
@@ -26,11 +29,11 @@ public class GithubAPIControllerTests {
     public async Task GetForkList_Returns_Empty_For_Repo_With_No_Forks() 
     {
         // Arrange
-        var githubResponse = new List<ForkDTO>(){};
-        var githubAPIController = Setup(githubResponse, HttpStatusCode.OK);
-
         string owner = "OliFryser";
         string repo = "GitInsightTestRepo_NoForks";
+
+        var githubAPIController = Setup(HttpStatusCode.OK, owner, repo, "forks");
+
 
         // Act
         var result = await githubAPIController.GetForkList(owner, repo);
@@ -43,13 +46,10 @@ public class GithubAPIControllerTests {
     public async Task GetForkList_Returns_1_Fork_For_Repo_With_1_Fork() 
     {
         // Arrange
-        var githubResponse = new List<ForkDTO>()
-        {
-            new("ForkedRepo", "https://github.com/A-Guldborg/ForkedRepo", new("A-Guldborg", "https://avatars.githubusercontent.com/u/95026056?s=80&v=4"))
-        };
-        var githubAPIController = Setup(githubResponse, HttpStatusCode.OK);
         string owner = "OliFryser";
         string repo = "GitInsightTestRepo_1Fork";
+
+        var githubAPIController = Setup(HttpStatusCode.OK, owner, repo, "forks");
 
         // Act
         var result = await githubAPIController.GetForkList(owner, repo);
@@ -62,13 +62,10 @@ public class GithubAPIControllerTests {
     public async void Valid_Repoistory_Should_Return_True()
     {
         // Given
-        var githubResponse = new List<ForkDTO>()
-        {
-            new("ForkedRepo", "https://github.com/A-Guldborg/ForkedRepo", new("A-Guldborg", "https://avatars.githubusercontent.com/u/95026056?s=80&v=4"))
-        };
-        var githubAPIController = Setup(githubResponse, HttpStatusCode.OK);
         string owner = "itu-bdsa";
         string repo = "project-description";
+    
+        var githubAPIController = Setup(HttpStatusCode.OK, owner, repo, "valid");
     
         // When
         var result = await githubAPIController.IsRepositoryValid(owner, repo);
@@ -81,10 +78,10 @@ public class GithubAPIControllerTests {
     public async void Invalid_Repository_Should_Return_False()
     {
         // Given
-        var githubResponse = new List<ForkDTO>(){};
-        var githubAPIController = Setup(githubResponse, HttpStatusCode.BadRequest);
         string owner = "WilliamHeidemann";
         string repo = "InsightGit";
+
+        var githubAPIController = Setup(HttpStatusCode.NotFound, owner, repo, "valid");
     
         // When
         var result = await githubAPIController.IsRepositoryValid(owner, repo);
@@ -92,7 +89,23 @@ public class GithubAPIControllerTests {
         // Then
         result.Should().Be(false);
     }
- 
+
+    [Fact]
+    public async void GetCommitSHAs_Returns_List_Of_SHA_Strings()
+    {
+        // Given
+        string owner = "OliFryser";
+        string repo = "GitInsightTestRepo_NoForks";
+    
+        var githubAPIController = Setup(HttpStatusCode.OK, owner, repo, "sha");
+
+        // When
+        var result = await githubAPIController.GetCommitSHAs(owner, repo);
+    
+        // Then
+        result.Count().Should().Be(1);
+        result.First().sha.Should().Be("5dd5878a4d94757be50c8c6c7f9ebf92a42169c1");
+    }
 
 
     public class HttpMessageHandlerMock : HttpMessageHandler
@@ -108,18 +121,5 @@ public class GithubAPIControllerTests {
         {
             return Task.FromResult(_httpResponseMessage);
         }
-    }
-
-    [Fact]
-    public void GetCommitSHAs_Returns_List_Of_SHA_Strings()
-    {
-        // Given
-
-        string owner = "OliFryser";
-        string repo = "GitInsightTestRepo_NoForks";
-    
-        // When
-    
-        // Then
     }
 }

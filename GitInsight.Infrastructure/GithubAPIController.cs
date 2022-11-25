@@ -22,7 +22,7 @@ public class GithubAPIController {
         _client = MockClient;
     }
 
-    private async Task<IEnumerable<CommitSHA>> GetCommitSHAs(string githubOrganization, string repositoryName)
+    public async Task<IEnumerable<CommitSHA>> GetCommitSHAs(string githubOrganization, string repositoryName)
     {
         var commitShas = await _client.GetAsync($"/repos/{githubOrganization}/{repositoryName}/commits");
 
@@ -51,7 +51,7 @@ public class GithubAPIController {
         return ReturnList!;
     }
 
-    private async Task<GitCommitInfoDTO?> GetCommitInfo(CommitSHA sha, string githubOrganization, string repositoryName)
+    public async Task<GitCommitInfoDTO?> GetCommitInfo(CommitSHA sha, string githubOrganization, string repositoryName)
     {
         var commit = await _client.GetAsync($"/repos/{githubOrganization}/{repositoryName}/commits/{sha.sha}");
         if (commit.IsSuccessStatusCode)
@@ -61,8 +61,6 @@ public class GithubAPIController {
         }
         throw new NotImplementedException();
     }
-
-    private record CommitSHA(string sha);
 
     public async Task<IEnumerable<ForkDTO>> GetForkList(string owner, string repo) 
     {
