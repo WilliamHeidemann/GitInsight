@@ -21,6 +21,8 @@ else
 {
     <RadzenChart>
         <RadzenColumnSeries Title="Total commit line changes per commit" Data="@commitStats" CategoryProperty="Commit.Author.Date" ValueProperty="Stats.Total"/>
+        <RadzenColumnOptions Radius="5" Width="20" />
+        <RadzenCategoryAxis Padding="20" />
     </RadzenChart>
 }
 @code {
