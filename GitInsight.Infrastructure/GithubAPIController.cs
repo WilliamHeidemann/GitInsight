@@ -22,7 +22,7 @@ public class GithubAPIController {
         _client = MockClient;
     }
 
-    public async Task<IEnumerable<GitCommitInfoDTO>> GetCommitStats(string githubOrganization, string repositoryName)
+    private async Task<IEnumerable<CommitSHA>> GetCommitSHAs(string githubOrganization, string repositoryName)
     {
         var commitShas = await _client.GetAsync($"/repos/{githubOrganization}/{repositoryName}/commits");
 
@@ -32,15 +32,23 @@ public class GithubAPIController {
             using var responseStream = await commitShas.Content.ReadAsStreamAsync();
             commitSHAs = await JsonSerializer.DeserializeAsync<IEnumerable<CommitSHA>>(responseStream);
 
-            IEnumerable<GitCommitInfoDTO> ReturnList = new List<GitCommitInfoDTO>();
-            foreach (var sha in commitSHAs!)
-            {
-                ReturnList.Append(await GetCommitInfo(sha, githubOrganization, repositoryName));
-            }
-            return ReturnList;
+            return commitSHAs!;
         }
 
-        throw new NotImplementedException();
+        throw new Exception("All hell broke loose!");
+    }
+
+    public async Task<IEnumerable<GitCommitInfoDTO>> GetCommitStats(string githubOrganization, string repositoryName)
+    {
+        var commits = await GetCommitSHAs(githubOrganization, repositoryName);
+            
+        IEnumerable<GitCommitInfoDTO?> ReturnList = new List<GitCommitInfoDTO>();
+
+        foreach (var sha in commits)
+        {
+            ReturnList = ReturnList.Append(await GetCommitInfo(sha, githubOrganization, repositoryName));
+        }
+        return ReturnList!;
     }
 
     private async Task<GitCommitInfoDTO?> GetCommitInfo(CommitSHA sha, string githubOrganization, string repositoryName)

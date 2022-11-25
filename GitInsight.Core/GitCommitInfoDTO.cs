@@ -1,9 +1,9 @@
 namespace GitInsight.Core;
 
-public record GitCommitInfoDTO(DateTime timestamp, GitCommitAuthorDTO author, GitCommitStatsDTO stats);
+public record GitCommitInfoDTO(GitCommitDTO commit, GitCommitStatsDTO stats);
 
 public record GitCommitStatsDTO(int total, int additions, int deletions);
 
-public record GitCommitAuthorDTO(GitAuthorDTO author);
+public record GitCommitDTO(GitCommitAuthorDTO author);
 
-public record GitAuthorDTO(string name, DateTime date);
+public record GitCommitAuthorDTO(string name, DateTime date);

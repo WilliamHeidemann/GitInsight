@@ -109,4 +109,17 @@ public class GithubAPIControllerTests {
             return Task.FromResult(_httpResponseMessage);
         }
     }
+
+    [Fact]
+    public void GetCommitSHAs_Returns_List_Of_SHA_Strings()
+    {
+        // Given
+
+        string owner = "OliFryser";
+        string repo = "GitInsightTestRepo_NoForks";
+    
+        // When
+    
+        // Then
+    }
 }
