@@ -22,6 +22,48 @@ public class GithubAPIController {
         _client = MockClient;
     }
 
+    private async Task<IEnumerable<CommitSHA>> GetCommitSHAs(string githubOrganization, string repositoryName)
+    {
+        var commitShas = await _client.GetAsync($"/repos/{githubOrganization}/{repositoryName}/commits");
+
+        if (commitShas.IsSuccessStatusCode)
+        {
+            IEnumerable<CommitSHA>? commitSHAs = new List<CommitSHA>();
+            using var responseStream = await commitShas.Content.ReadAsStreamAsync();
+            commitSHAs = await JsonSerializer.DeserializeAsync<IEnumerable<CommitSHA>>(responseStream);
+
+            return commitSHAs!;
+        }
+
+        throw new Exception("All hell broke loose!");
+    }
+
+    public async Task<IEnumerable<GitCommitInfoDTO>> GetCommitStats(string githubOrganization, string repositoryName)
+    {
+        var commits = await GetCommitSHAs(githubOrganization, repositoryName);
+            
+        IEnumerable<GitCommitInfoDTO?> ReturnList = new List<GitCommitInfoDTO>();
+
+        foreach (var sha in commits)
+        {
+            ReturnList = ReturnList.Append(await GetCommitInfo(sha, githubOrganization, repositoryName));
+        }
+        return ReturnList!;
+    }
+
+    private async Task<GitCommitInfoDTO?> GetCommitInfo(CommitSHA sha, string githubOrganization, string repositoryName)
+    {
+        var commit = await _client.GetAsync($"/repos/{githubOrganization}/{repositoryName}/commits/{sha.sha}");
+        if (commit.IsSuccessStatusCode)
+        {
+            using var responseStream = await commit.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<GitCommitInfoDTO>(responseStream);
+        }
+        throw new NotImplementedException();
+    }
+
+    private record CommitSHA(string sha);
+
     public async Task<IEnumerable<ForkDTO>> GetForkList(string owner, string repo) 
     {
         var response = await _client.GetAsync("/repos/" + owner + "/" + repo + "/forks");

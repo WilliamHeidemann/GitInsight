@@ -69,6 +69,14 @@ namespace GitInsight.RestAPI
                 return await githubAPIController.GetForkList(githubOrganization, repositoryName);
             });
 
+            app.MapGet("commitstats/{githubOrganization}/{repositoryName}", async (
+                    string githubOrganization,
+                    string repositoryName)
+                =>
+            {
+                return await githubAPIController.GetCommitStats(githubOrganization, repositoryName);
+            });
+
             app.Run();
         }
 
