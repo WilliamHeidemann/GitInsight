@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitInsight.Infrastructure",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitInsight.RestAPI", "GitInsight.RestAPI\GitInsight.RestAPI.csproj", "{C70688FC-ED21-4A72-8FC8-6758363A642A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{CB58DB42-E1AF-430C-B34B-388789AD9184}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitInsight.BlazorApp", "GitInsight.BlazorApp\GitInsight.BlazorApp.csproj", "{CB58DB42-E1AF-430C-B34B-388789AD9184}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitInsight.RestAPI.Tests", "GitInsight.RestAPI.Tests\GitInsight.RestAPI.Tests.csproj", "{1505AB0A-30E1-45BA-BB18-FD5FD8AF6333}"
 EndProject

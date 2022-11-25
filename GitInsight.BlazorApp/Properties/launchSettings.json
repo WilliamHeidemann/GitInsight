@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "BlazorApp": {
+    "GitInsight.BlazorApp": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

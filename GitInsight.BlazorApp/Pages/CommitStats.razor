@@ -1,0 +1,94 @@
+@page "/commitstats"
+@using System.Globalization
+@using Radzen
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject Data.StartPageModel startPageModel
+
+<PageTitle>Commit Stats</PageTitle>
+
+<h1>Commit Stats for @startPageModel.RepoPath</h1>
+
+<p>Commit Stats History:</p>
+
+@if (!startPageModel.IsValidRepo)
+{
+    <p>
+        Repository Path was not valid
+    </p>
+}
+else
+{
+    <RadzenChart>
+        <RadzenColumnSeries Title="Total line changes per commit" Data="@commitStats" CategoryProperty="Commit.Author.Date" ValueProperty="Stats.Total"/>
+        <RadzenColumnOptions Radius="5" Width="10" />
+        <RadzenCategoryAxis Padding="20" />
+    </RadzenChart>
+    <RadzenChart>
+        <RadzenColumnSeries Title="Line additions per commit" Data="@commitStats" CategoryProperty="Commit.Author.Date" ValueProperty="Stats.Additions" Fill="green"/>
+        <RadzenColumnOptions Radius="5" Width="10" />
+        <RadzenCategoryAxis Padding="20" />
+    </RadzenChart>
+    <RadzenChart>
+        <RadzenColumnSeries Title="Line deletions per commit" Data="@commitStats" CategoryProperty="Commit.Author.Date" ValueProperty="Stats.Deletions" Fill="red"/>
+        <RadzenColumnOptions Radius="5" Width="10" />
+        <RadzenCategoryAxis Padding="20" />
+    </RadzenChart>
+}
+@code {
+    private IEnumerable<CommitStat>? commitStats = Array.Empty<CommitStat>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            "https://localhost:7283/commitstats/"  + startPageModel.RepoPath);
+        HttpClientHandler clientHandler = new HttpClientHandler();
+        clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+
+
+        var client = new HttpClient(clientHandler);
+        
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            commitStats = await JsonSerializer.DeserializeAsync
+                <IEnumerable<CommitStat>>(responseStream);
+        }
+    }
+
+
+    public class CommitStat
+    {
+        [JsonPropertyName("commit")]
+        public Commit Commit { get; set; }
+        [JsonPropertyName("stats")]
+        public Stats Stats { get; set; }
+    }
+
+    public class Commit
+    {
+        [JsonPropertyName("author")]
+        public Author Author { get; set; }
+    }
+
+    public class Author
+    {
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("date")]
+        public DateTime Date { get; set; }
+    }
+
+    public class Stats
+    {
+        [JsonPropertyName("total")]
+        public int Total { get; set; }
+        [JsonPropertyName("additions")]
+        public int Additions { get; set; }
+        [JsonPropertyName("deletions")]
+        public int Deletions { get; set; }
+    }
+    
+}
