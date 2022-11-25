@@ -1,4 +1,4 @@
-namespace BlazorApp.Data;
+namespace GitInsight.BlazorApp.Data;
 using System.ComponentModel.DataAnnotations;
 
 public class StartPageModel

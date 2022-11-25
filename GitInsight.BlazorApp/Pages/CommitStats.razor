@@ -24,7 +24,7 @@ else
     </RadzenChart>
 }
 @code {
-    private IEnumerable<CommitStats>? commitStats = Array.Empty<CommitStats>();
+    private IEnumerable<CommitStat>? commitStats = Array.Empty<CommitStat>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,12 +42,12 @@ else
         {
             using var responseStream = await response.Content.ReadAsStreamAsync();
             commitStats = await JsonSerializer.DeserializeAsync
-                <IEnumerable<CommitStats>>(responseStream);
+                <IEnumerable<CommitStat>>(responseStream);
         }
     }
 
 
-    public class CommitStats
+    public class CommitStat
     {
         [JsonPropertyName("commit")]
         public Commit Commit { get; set; }
