@@ -12,7 +12,8 @@ public class GithubAPIController {
         var config = new ConfigurationBuilder().AddUserSecrets<GithubAPIController>().Build();
         _client = new HttpClient();
         _client.BaseAddress = new Uri("https://api.github.com");
-        var token = config["AuthenticationTokens:GitHubAPI"];
+        var token = System.Environment.GetEnvironmentVariable("GithubAPI");
+        Console.WriteLine($"Token is: {token}");
 
         _client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("AppName", "1.0"));
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", token);
@@ -54,7 +55,7 @@ public class GithubAPIController {
             return commitSHAs!;
         }
 
-        throw new Exception("All hell broke loose!");
+        throw new Exception(commitShas.StatusCode.ToString());
     }
 
     public async Task<IEnumerable<GitCommitInfoDTO>> GetCommitStats(string githubOrganization, string repositoryName)
