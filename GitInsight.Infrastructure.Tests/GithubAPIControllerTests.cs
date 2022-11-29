@@ -7,24 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 
 public class GithubAPIControllerTests {
-
-    public GithubAPIController Setup(HttpStatusCode statusCode, string owner, string repo, string type)
-    {
-        var filepath = $"../../../github-responses/{owner}-{repo}-{type}";
-        var expectedAPIResponse = File.ReadAllText(filepath);
-
-        var JsonString = JsonSerializer.Serialize(expectedAPIResponse);
-        var content = new StringContent(JsonString, Encoding.UTF8, "application/json");
-        
-        var GithubAPIMock = new HttpClient(new HttpMessageHandlerMock(new HttpResponseMessage()
-        {
-            StatusCode = statusCode,
-            Content = content,
-        }));
-        GithubAPIMock.BaseAddress = new Uri("https://api.github.com");
-        return new GithubAPIController(GithubAPIMock);
-    }
-
     [Fact]
     public async Task GetForkList_Returns_Empty_For_Repo_With_No_Forks() 
     {
@@ -32,7 +14,7 @@ public class GithubAPIControllerTests {
         string owner = "OliFryser";
         string repo = "GitInsightTestRepo_NoForks";
 
-        var githubAPIController = Setup(HttpStatusCode.OK, owner, repo, "forks");
+        var githubAPIController = new GithubAPIController();
 
 
         // Act
@@ -49,7 +31,7 @@ public class GithubAPIControllerTests {
         string owner = "OliFryser";
         string repo = "GitInsightTestRepo_1Fork";
 
-        var githubAPIController = Setup(HttpStatusCode.OK, owner, repo, "forks");
+        var githubAPIController = new GithubAPIController();
 
         // Act
         var result = await githubAPIController.GetForkList(owner, repo);
@@ -65,7 +47,7 @@ public class GithubAPIControllerTests {
         string owner = "itu-bdsa";
         string repo = "project-description";
     
-        var githubAPIController = Setup(HttpStatusCode.OK, owner, repo, "valid");
+        var githubAPIController = new GithubAPIController();
     
         // When
         var result = await githubAPIController.IsRepositoryValid(owner, repo);
@@ -81,7 +63,7 @@ public class GithubAPIControllerTests {
         string owner = "WilliamHeidemann";
         string repo = "InsightGit";
 
-        var githubAPIController = Setup(HttpStatusCode.NotFound, owner, repo, "valid");
+        var githubAPIController = new GithubAPIController();
     
         // When
         var result = await githubAPIController.IsRepositoryValid(owner, repo);
@@ -97,7 +79,7 @@ public class GithubAPIControllerTests {
         string owner = "OliFryser";
         string repo = "GitInsightTestRepo_NoForks";
     
-        var githubAPIController = Setup(HttpStatusCode.OK, owner, repo, "sha");
+        var githubAPIController = new GithubAPIController();
 
         // When
         var result = await githubAPIController.GetCommitSHAs(owner, repo);

@@ -13,14 +13,9 @@ public class GithubAPIController {
         _client = new HttpClient();
         _client.BaseAddress = new Uri("https://api.github.com");
         var token = System.Environment.GetEnvironmentVariable("GithubAPI");
-        Console.WriteLine($"Token is: {token}");
 
         _client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("AppName", "1.0"));
         _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", token);
-    }
-
-    public GithubAPIController(HttpClient MockClient) {
-        _client = MockClient;
     }
 
     public async Task<IEnumerable<CommitSHA>> GetCommitSHAs(string githubOrganization, string repositoryName)
