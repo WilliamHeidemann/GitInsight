@@ -20,11 +20,11 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ GithubAPI }}
     
     steps:
       - uses: actions/checkout@v3
+        env:
+          GITHUB_TOKEN: ${{ GithubAPI }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
