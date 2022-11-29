@@ -1,0 +1,77 @@
+[
+  {
+    "sha": "5dd5878a4d94757be50c8c6c7f9ebf92a42169c1",
+    "node_id": "C_kwDOIcnCl9oAKDVkZDU4NzhhNGQ5NDc1N2JlNTBjOGM2YzdmOWViZjkyYTQyMTY5YzE",
+    "commit": {
+      "author": {
+        "name": "Oliver Friis",
+        "email": "94053214+OliFryser@users.noreply.github.com",
+        "date": "2022-11-16T15:37:36Z"
+      },
+      "committer": {
+        "name": "GitHub",
+        "email": "noreply@github.com",
+        "date": "2022-11-16T15:37:36Z"
+      },
+      "message": "Initial commit",
+      "tree": {
+        "sha": "c632e65400c311e593c34f5d4ce03b2b433add48",
+        "url": "https://api.github.com/repos/OliFryser/GitInsightTestRepo_NoForks/git/trees/c632e65400c311e593c34f5d4ce03b2b433add48"
+      },
+      "url": "https://api.github.com/repos/OliFryser/GitInsightTestRepo_NoForks/git/commits/5dd5878a4d94757be50c8c6c7f9ebf92a42169c1",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsBcBAABCAAQBQJjdQPACRBK7hj4Ov3rIwAAXPEIAHph+0Q/nIv+eKfeSJC7kXHF\neD2Y+pArZn1kAnCmX7dDQGtoVDmbI3LMXra3Mc4S96bCoKV1faTtnnt1eb58lpGX\nM3TV/MQFiwo3x39U4GY4jjNlm7mCSwnmgYldSccTfKTle//JKYCyUxFKDgKh8PD7\n7GZN3/4RI0fahjNK968LDqgXXMZHP6FkXdLj6GCyZEhKhUBxvddJ5QAmR8RgUKTH\nAfRqt32q2SvTI1sXRcUMIcKMW8Zap6rxu6n2n9Qhd98YD0iKDTyUk+FT4e4ySq7C\nEtRnT3KtBJ1y5Uoc9+Hka/lq6Z+2ENYoQADVZI4mWJqjEFxy9bcrkZWH4PFhEkg=\n=nu3/\n-----END PGP SIGNATURE-----\n",
+        "payload": "tree c632e65400c311e593c34f5d4ce03b2b433add48\nauthor Oliver Friis <94053214+OliFryser@users.noreply.github.com> 1668613056 +0100\ncommitter GitHub <noreply@github.com> 1668613056 +0100\n\nInitial commit"
+      }
+    },
+    "url": "https://api.github.com/repos/OliFryser/GitInsightTestRepo_NoForks/commits/5dd5878a4d94757be50c8c6c7f9ebf92a42169c1",
+    "html_url": "https://github.com/OliFryser/GitInsightTestRepo_NoForks/commit/5dd5878a4d94757be50c8c6c7f9ebf92a42169c1",
+    "comments_url": "https://api.github.com/repos/OliFryser/GitInsightTestRepo_NoForks/commits/5dd5878a4d94757be50c8c6c7f9ebf92a42169c1/comments",
+    "author": {
+      "login": "OliFryser",
+      "id": 94053214,
+      "node_id": "U_kgDOBZsjXg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/94053214?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/OliFryser",
+      "html_url": "https://github.com/OliFryser",
+      "followers_url": "https://api.github.com/users/OliFryser/followers",
+      "following_url": "https://api.github.com/users/OliFryser/following{/other_user}",
+      "gists_url": "https://api.github.com/users/OliFryser/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/OliFryser/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/OliFryser/subscriptions",
+      "organizations_url": "https://api.github.com/users/OliFryser/orgs",
+      "repos_url": "https://api.github.com/users/OliFryser/repos",
+      "events_url": "https://api.github.com/users/OliFryser/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/OliFryser/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "web-flow",
+      "id": 19864447,
+      "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/web-flow",
+      "html_url": "https://github.com/web-flow",
+      "followers_url": "https://api.github.com/users/web-flow/followers",
+      "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+      "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+      "organizations_url": "https://api.github.com/users/web-flow/orgs",
+      "repos_url": "https://api.github.com/users/web-flow/repos",
+      "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/web-flow/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "parents": [
+
+    ]
+  }
+]
