@@ -23,8 +23,8 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3
-        env:
-          GITHUB_TOKEN: ${{ GithubAPI }}
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
