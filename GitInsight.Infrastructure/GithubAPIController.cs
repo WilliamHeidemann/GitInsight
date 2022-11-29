@@ -24,7 +24,26 @@ public class GithubAPIController {
 
     public async Task<IEnumerable<CommitSHA>> GetCommitSHAs(string githubOrganization, string repositoryName)
     {
-        var commitShas = await _client.GetAsync($"/repos/{githubOrganization}/{repositoryName}/commits");
+        var ReturnList = new List<CommitSHA>();
+        int page = 1;
+        while(true)
+        {
+            var commits = await GetCommitSHAs(githubOrganization, repositoryName, page++);
+            if (commits.Count() > 0)
+            {
+                ReturnList.AddRange(commits);
+            }
+            else
+            {
+                break;
+            }
+        }
+        return ReturnList;
+    }
+
+    private async Task<IEnumerable<CommitSHA>> GetCommitSHAs(string githubOrganization, string repositoryName, int pageNumber)
+    {
+        var commitShas = await _client.GetAsync($"/repos/{githubOrganization}/{repositoryName}/commits?page={pageNumber}&per_page=100");
 
         if (commitShas.IsSuccessStatusCode)
         {
@@ -41,7 +60,7 @@ public class GithubAPIController {
     public async Task<IEnumerable<GitCommitInfoDTO>> GetCommitStats(string githubOrganization, string repositoryName)
     {
         var commits = await GetCommitSHAs(githubOrganization, repositoryName);
-            
+        Console.WriteLine(commits.Count());
         IEnumerable<GitCommitInfoDTO?> ReturnList = new List<GitCommitInfoDTO>();
 
         foreach (var sha in commits)
