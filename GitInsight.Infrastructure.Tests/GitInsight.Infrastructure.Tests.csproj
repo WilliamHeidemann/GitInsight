@@ -12,7 +12,7 @@
         <PackageReference Include="FluentAssertions" Version="6.8.0" />
         <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0158" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
         <PackageReference Include="Moq" Version="4.18.2" />
